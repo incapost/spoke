@@ -971,7 +971,6 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /** @description The title of the plan. */
                     title: string;
                     /** @description The date the plan starts. Does not accept dates that are too far in the future or past. */
                     starts: {
@@ -1328,7 +1327,6 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
-                    /** @description The title of the plan. */
                     title?: string;
                     /** @description The date the plan starts. Does not accept dates that are too far in the future or past. */
                     starts?: {
@@ -2273,11 +2271,9 @@ export interface operations {
             };
             cookie?: never;
         };
-        /** @description The request body for creating a stop. The only required field is address, you need to provide at least one of the fields in it. The latitude and longitude fields will override any of the other fields if they are set(and they need to be both set if any of them are). The more fields you provide the more accurate the geocoding will be. */
         requestBody: {
             content: {
                 "application/json": {
-                    /** @description Address of the stop, at least one of the fields is required. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
                     address: {
                         /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                         addressName?: string | null;
@@ -2347,7 +2343,7 @@ export interface operations {
                          * @description Currency of the payment. Defaults to the team's currency.
                          * @enum {string|null}
                          */
-                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
                     } | null;
                     /** @description Proof of attempt requirement settings for this stop */
                     proofOfAttemptRequirements?: {
@@ -2407,7 +2403,7 @@ export interface operations {
                     "application/json": components["schemas"]["stopSchema"];
                 };
             };
-            /** @description The request has errors. Either syntatic or semantic */
+            /** @description The request has errors. Either syntactic or semantic */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -2553,7 +2549,6 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
-                    /** @description Address of the stop, at least one of the fields is required. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
                     address: {
                         /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                         addressName?: string | null;
@@ -2623,7 +2618,7 @@ export interface operations {
                          * @description Currency of the payment. Defaults to the team's currency.
                          * @enum {string|null}
                          */
-                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
                     } | null;
                     /** @description Proof of attempt requirement settings for this stop */
                     proofOfAttemptRequirements?: {
@@ -2709,7 +2704,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description The request has errors. Either syntatic or semantic */
+            /** @description The request has errors. Either syntactic or semantic */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -3077,7 +3072,6 @@ export interface operations {
             };
             cookie?: never;
         };
-        /** @description The request body for updating a stop. All the values present in the request will update the stop value, if you wish to update only certain fields, only set them and do not set the others. Any fields not set will not be updated. */
         requestBody?: {
             content: {
                 "application/json": {
@@ -3111,7 +3105,7 @@ export interface operations {
                          * @description Currency of the payment. Defaults to the team's currency.
                          * @enum {string|null}
                          */
-                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
                     } | null;
                     /** @description Proof of attempt requirement settings for this stop */
                     proofOfAttemptRequirements?: {
@@ -3187,7 +3181,7 @@ export interface operations {
                     "application/json": components["schemas"]["stopSchema"];
                 };
             };
-            /** @description The request has errors. Either syntatic or semantic */
+            /** @description The request has errors. Either syntactic or semantic */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -3306,11 +3300,9 @@ export interface operations {
             };
             cookie?: never;
         };
-        /** @description The request body for creating a stop. The only required field is address, you need to provide at least one of the fields in it. The latitude and longitude fields will override any of the other fields if they are set(and they need to be both set if any of them are). The more fields you provide the more accurate the geocoding will be. */
         requestBody: {
             content: {
                 "application/json": {
-                    /** @description Address of the stop, at least one of the fields is required. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
                     address: {
                         /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                         addressName?: string | null;
@@ -3380,7 +3372,7 @@ export interface operations {
                          * @description Currency of the payment. Defaults to the team's currency.
                          * @enum {string|null}
                          */
-                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
                     } | null;
                     /** @description Proof of attempt requirement settings for this stop */
                     proofOfAttemptRequirements?: {
@@ -3443,7 +3435,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description The request has errors. Either syntatic or semantic */
+            /** @description The request has errors. Either syntactic or semantic */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -3587,7 +3579,6 @@ export interface operations {
             };
             cookie?: never;
         };
-        /** @description The request body for updating a stop. All the values present in the request will update the stop value, if you wish to update only certain fields, only set them and do not set the others. Any fields not set will not be updated. */
         requestBody?: {
             content: {
                 "application/json": {
@@ -3621,7 +3612,7 @@ export interface operations {
                          * @description Currency of the payment. Defaults to the team's currency.
                          * @enum {string|null}
                          */
-                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
                     } | null;
                     /** @description Proof of attempt requirement settings for this stop */
                     proofOfAttemptRequirements?: {
@@ -3700,7 +3691,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description The request has errors. Either syntatic or semantic */
+            /** @description The request has errors. Either syntactic or semantic */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -3838,7 +3829,6 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
-                    /** @description Address of the stop, at least one of the fields is required. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
                     address: {
                         /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                         addressName?: string | null;
@@ -3908,7 +3898,7 @@ export interface operations {
                          * @description Currency of the payment. Defaults to the team's currency.
                          * @enum {string|null}
                          */
-                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
                     } | null;
                     /** @description Proof of attempt requirement settings for this stop */
                     proofOfAttemptRequirements?: {
@@ -3995,7 +3985,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description The request has errors. Either syntatic or semantic */
+            /** @description The request has errors. Either syntactic or semantic */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -4357,7 +4347,6 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        /** @description The request body for creating a driver. Even though `email` and `phone` are optional, you must provide exactly one of them */
         requestBody?: {
             content: {
                 "application/json": {
@@ -5855,7 +5844,7 @@ export interface operations {
                          * @description Currency of the payment. Defaults to the team's currency.
                          * @enum {string|null}
                          */
-                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
                     } | null;
                     /** @description Proof of attempt requirement settings for this stop */
                     proofOfAttemptRequirements?: {
@@ -5928,7 +5917,7 @@ export interface operations {
                     "application/json": components["schemas"]["unassignedStopSchema"];
                 };
             };
-            /** @description The request has errors. Either syntatic or semantic */
+            /** @description The request has errors. Either syntactic or semantic */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -6100,7 +6089,6 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /** @description Address of the stop, at least one of the fields is required. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
                     address: {
                         /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                         addressName?: string | null;
@@ -6172,7 +6160,7 @@ export interface operations {
                          * @description Currency of the payment. Defaults to the team's currency.
                          * @enum {string|null}
                          */
-                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
                     } | null;
                     /** @description Proof of attempt requirement settings for this stop */
                     proofOfAttemptRequirements?: {
@@ -6227,7 +6215,7 @@ export interface operations {
                     "application/json": components["schemas"]["unassignedStopSchema"];
                 };
             };
-            /** @description The request has errors. Either syntatic or semantic */
+            /** @description The request has errors. Either syntactic or semantic */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -6338,7 +6326,6 @@ export interface operations {
                 "application/json": {
                     /** @description An array of unassigned stops to import in batch. Supports a maximum of 100 unassigned stops per request. Note that the `depot` is shared across all unassigned stops in the request, and thus should not be provided for individual unassigned stops. That is because the `depot` location is used to bias the geocoding results of the stops. */
                     unassignedStops: {
-                        /** @description Address of the stop, at least one of the fields is required. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
                         address: {
                             /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                             addressName?: string | null;
@@ -6408,7 +6395,7 @@ export interface operations {
                              * @description Currency of the payment. Defaults to the team's currency.
                              * @enum {string|null}
                              */
-                            currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                            currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
                         } | null;
                         /** @description Proof of attempt requirement settings for this stop */
                         proofOfAttemptRequirements?: {
@@ -6492,7 +6479,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description The request has errors. Either syntatic or semantic */
+            /** @description The request has errors. Either syntactic or semantic */
             400: {
                 headers: {
                     [name: string]: unknown;
