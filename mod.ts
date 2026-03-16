@@ -8,6 +8,9 @@ const BASE_URL = "https://api.getcircuit.com/public/v0.2b";
 /**
  * Create a Spoke REST API client.
  *
+ * Supports version 0.2b of the Spoke API, which is the latest version as of May
+ * 2023.
+ *
  * @see {@link https://developer.dispatch.spoke.com | Spoke API Documentation}
  * for endpoints and usage details.
  *
