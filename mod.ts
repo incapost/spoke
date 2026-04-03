@@ -60,6 +60,8 @@ export interface WebhookRequestBody {
  *
  * @throws {TypeError} If the signature header is missing or if the signature is
  * incorrect.
+ * @throws {SyntaxError} If the input string contains characters outside the hex
+ * alphabet, or its length is odd.
  *
  * @param webhookSecretKey The webhook secret key used to verify the signature
  * of the request. Generate it at
