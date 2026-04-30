@@ -1,6 +1,6 @@
 {
   "name": "@incapost/spoke",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "exports": "./mod.ts",
   "license": "MIT",
   "tasks": {
@@ -17,9 +17,6 @@
     "noUncheckedIndexedAccess": true
   },
   "fmt": {
-    "exclude": [
-      "openapi.json",
-      "types.d.ts"
-    ]
+    "exclude": ["openapi.json", "types.d.ts"]
   }
 }
