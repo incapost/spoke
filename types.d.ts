@@ -746,6 +746,18 @@ export interface components {
             deliveryInfo: {
                 attempted: boolean;
                 attemptedAt: number | null;
+                arrivedAt: number | null;
+                timeAtStopInfo: {
+                    arrivedAt: number | null;
+                    departedAt: number | null;
+                    isEstimated: boolean | null;
+                } | null;
+                timeAtStopInfoNullReason: {
+                    /** @enum {string} */
+                    reason: "subscription_not_supported";
+                    message: string;
+                    url: string | null;
+                } | null;
                 attemptedLocation: {
                     latitude: number;
                     longitude: number;
@@ -838,6 +850,7 @@ export interface components {
              * @enum {string}
              */
             activity: "delivery" | "pickup";
+            trackingLink: string | null;
             timing: {
                 estimatedAttemptDuration: number | null;
                 earliestAttemptTime: components["schemas"]["timeOfDaySchema"] | null;

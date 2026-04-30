@@ -43,16 +43,30 @@ export function createSpokeClient(
 }
 
 // Until Spoke publishes this definition
-export interface WebhookRequestBody {
+export type WebhookRequestBody = {
   type:
     | "stop.allocated"
     | "stop.out_for_delivery"
     | "stop.attempted_delivery"
-    | "test.send_event";
+    | "stop.departed"
+    | "stop.tracking_link_added";
   version: "v0.2b";
   created: number;
   data: components["schemas"]["stopSchema"];
-}
+} | {
+  type: "unassigned_stop.tracking_link_added";
+  version: "v0.2b";
+  created: number;
+  data: components["schemas"]["unassignedStopSchema"];
+} | {
+  type: "test.send_event";
+  version: "v0.2b";
+  created: number;
+  data: {
+    email: string;
+    webhookUrl: string;
+  };
+};
 
 /**
  * Asserts that a webhook request is valid by verifying its signature using the
