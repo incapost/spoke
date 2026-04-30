@@ -71,40 +71,45 @@ export type WebhookRequestBody =
   );
 
 /**
- * Asserts that a webhook request is valid by verifying its signature using the
- * provided webhook secret key.
+ * Verifies a webhook request's signature and returns the parsed body.
+ *
+ * Combines signature verification and body parsing into a single call. Unlike
+ * {@linkcode assertWebhookRequest}, the request body does not need to be read
+ * again after calling this function.
+ *
+ * Note: this function consumes the request body.
  *
  * @throws {TypeError} If the signature header is missing or if the signature is
  * incorrect.
- * @throws {SyntaxError} If the input string contains characters outside the hex
- * alphabet, or its length is odd.
+ * @throws {SyntaxError} If the signature header contains characters outside the
+ * hex alphabet, or its length is odd.
  *
  * @param webhookSecretKey The webhook secret key used to verify the signature
  * of the request. Generate it at
  * {@link https://dispatch.spoke.com/settings/integrations}.
  * @param request The incoming webhook request to be verified.
+ * @returns The parsed {@linkcode WebhookRequestBody}.
  *
  * @see {@link https://developer.dispatch.spoke.com/docs/getting-started/securing-the-endpoint | Securing the Endpoint}
  *
  * @example Usage
  * ```ts
- * import { assertWebhookRequest, type WebhookRequestBody } from "@incapost/spoke";
+ * import { getWebhookRequestBodyOrThrow } from "@incapost/spoke";
  *
  * async function handleWebhook(request: Request) {
  *   try {
- *     await assertWebhookRequest("your_webhook_secret_key", request);
- *     const body = (await request.json()) as WebhookRequestBody;
- *     // Process the webhook request
- *   } catch (error) {
+ *     const body = await getWebhookRequestBodyOrThrow("your_webhook_secret_key", request);
+ *     // Process body.type and body.data
+ *   } catch {
  *     return new Response("Invalid signature", { status: 400 });
  *   }
  * }
  * ```
  */
-export async function assertWebhookRequest(
+export async function getWebhookRequestBodyOrThrow(
   webhookSecretKey: string,
   request: Request,
-) {
+): Promise<WebhookRequestBody> {
   const signature = request.headers.get("spoke-signature");
   if (!signature) {
     throw new TypeError("Missing signature header");
@@ -117,11 +122,13 @@ export async function assertWebhookRequest(
     false,
     ["sign"],
   );
-
-  const body = await request.clone().arrayBuffer();
-  const expected = await crypto.subtle.sign("HMAC", key, body);
-  const received = Uint8Array.fromHex(signature);
-  if (!timingSafeEqual(expected, received)) {
+  const rawBody = await request.bytes();
+  const expectedSignature = await crypto.subtle.sign("HMAC", key, rawBody);
+  const receivedSignature = Uint8Array.fromHex(signature);
+  if (!timingSafeEqual(expectedSignature, receivedSignature)) {
     throw new TypeError("Incorrect signature");
   }
+
+  const rawJson = new TextDecoder().decode(rawBody);
+  return JSON.parse(rawJson) as WebhookRequestBody;
 }

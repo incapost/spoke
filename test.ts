@@ -1,6 +1,10 @@
 import { assertEquals, assertRejects } from "@std/assert";
 import { stub } from "@std/testing/mock";
-import { assertWebhookRequest, createSpokeClient } from "./mod.ts";
+import {
+  createSpokeClient,
+  getWebhookRequestBodyOrThrow,
+  type WebhookRequestBody,
+} from "./mod.ts";
 
 Deno.test("createSpokeClient()", async () => {
   const apiKey = "test-api-key";
@@ -29,11 +33,19 @@ async function signPayload(body: Uint8Array<ArrayBuffer>): Promise<string> {
   return new Uint8Array(signature).toHex();
 }
 
-Deno.test("assertWebhookRequest()", async (t) => {
+Deno.test("getWebhookRequestBodyOrThrow()", async (t) => {
+  const payload: WebhookRequestBody = {
+    type: "test.send_event",
+    version: "v0.2b",
+    created: 1000000000,
+    data: { email: "test@example.com", webhookUrl: "https://example.com/hook" },
+  };
+  const encodedPayload = new TextEncoder().encode(JSON.stringify(payload));
+
   await t.step("rejects on missing signature", async () => {
     await assertRejects(
       () =>
-        assertWebhookRequest(
+        getWebhookRequestBodyOrThrow(
           WEBHOOK_SECRET_KEY,
           new Request("https://example.com"),
         ),
@@ -43,18 +55,17 @@ Deno.test("assertWebhookRequest()", async (t) => {
   });
 
   await t.step("rejects on invalid signature", async () => {
-    const body = new TextEncoder().encode(JSON.stringify({ hello: "world" }));
-    const signature = await signPayload(body);
+    const signature = await signPayload(encodedPayload);
     const invalidSignature = signature.slice(0, -1) +
       (signature.slice(-1) === "0" ? "1" : "0");
 
     await assertRejects(
       () =>
-        assertWebhookRequest(
+        getWebhookRequestBodyOrThrow(
           WEBHOOK_SECRET_KEY,
           new Request("https://example.com", {
             method: "POST",
-            body: JSON.stringify({ hello: "world" }),
+            body: encodedPayload,
             headers: { "spoke-signature": invalidSignature },
           }),
         ),
@@ -63,17 +74,18 @@ Deno.test("assertWebhookRequest()", async (t) => {
     );
   });
 
-  await t.step("passes on valid signature", async () => {
-    const body = new TextEncoder().encode(JSON.stringify({ hello: "world" }));
-    const signature = await signPayload(body);
+  await t.step("returns parsed body on valid signature", async () => {
+    const signature = await signPayload(encodedPayload);
 
-    await assertWebhookRequest(
+    const result = await getWebhookRequestBodyOrThrow(
       WEBHOOK_SECRET_KEY,
       new Request("https://example.com", {
         method: "POST",
-        body: JSON.stringify({ hello: "world" }),
+        body: encodedPayload,
         headers: { "spoke-signature": signature },
       }),
     );
+
+    assertEquals(result, payload);
   });
 });
