@@ -50,7 +50,7 @@ Deno.test("getWebhookRequestBodyOrThrow()", async (t) => {
           new Request("https://example.com"),
         ),
       TypeError,
-      "Missing signature",
+      "Missing signature header",
     );
   });
 
