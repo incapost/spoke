@@ -1,8 +1,14 @@
 # Security Policy
 
+## Supported Versions
+
+Only the latest version receives security fixes.
+
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+Please report vulnerabilities via
+[GitHub's private vulnerability reporting](https://github.com/incapost/spoke/security/advisories/new)
+rather than opening a public issue.
 
-Tell them where to go, how often they can expect to get an update on a reported
-vulnerability, what to expect if the vulnerability is accepted or declined, etc.
+You can expect an acknowledgement within 48 hours and a patch within 30 days.
+Reporters will be credited in the pull request that resolves the vulnerability.
