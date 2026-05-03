@@ -73,11 +73,8 @@ export type WebhookRequestBody =
 /**
  * Verifies a webhook request's signature and returns the parsed body.
  *
- * Combines signature verification and body parsing into a single call. Unlike
- * {@linkcode assertWebhookRequest}, the request body does not need to be read
- * again after calling this function.
- *
- * Note: this function consumes the request body.
+ * Combines signature verification and body parsing into a single call. The
+ * request body does not need to be read again after calling this function.
  *
  * @throws {TypeError} If the signature header is missing or if the signature is
  * incorrect.
