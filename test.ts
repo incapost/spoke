@@ -11,7 +11,7 @@ Deno.test("createSpokeClient()", async () => {
   using _fetchStub = stub(globalThis, "fetch", (input) => {
     const request = input as Request;
     assertEquals(request.headers.get("Authorization"), `Bearer ${apiKey}`);
-    assertEquals(request.url, "https://api.getcircuit.com/public/v0.2b/plans");
+    assertEquals(request.url, "https://api.getcircuit.com/public/v1/plans");
     return Promise.resolve(new Response("{}"));
   });
 
@@ -36,7 +36,7 @@ async function signPayload(body: Uint8Array<ArrayBuffer>): Promise<string> {
 Deno.test("getWebhookRequestBodyOrThrow()", async (t) => {
   const payload: WebhookRequestBody = {
     type: "test.send_event",
-    version: "v0.2b",
+    version: "v1",
     created: 1000000000,
     data: { email: "test@example.com", webhookUrl: "https://example.com/hook" },
   };

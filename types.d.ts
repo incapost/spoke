@@ -375,7 +375,8 @@ export interface paths {
         /** List Depots */
         get: operations["listDepots"];
         put?: never;
-        post?: never;
+        /** Create a depot */
+        post: operations["createDepot"];
         delete?: never;
         options?: never;
         head?: never;
@@ -393,6 +394,45 @@ export interface paths {
         get: operations["getDepot"];
         put?: never;
         post?: never;
+        /** Remove a depot */
+        delete: operations["deleteDepot"];
+        options?: never;
+        head?: never;
+        /** Update a depot */
+        patch: operations["updateDepot"];
+        trace?: never;
+    };
+    "/depots:import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Batch import depots
+         * @description Batch import depots. The request body must contain an array of depots to import.
+         */
+        post: operations["importDepots"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/depots/{depotId}:setMain": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Set the main depot for the team */
+        post: operations["setMainDepot"];
         delete?: never;
         options?: never;
         head?: never;
@@ -408,6 +448,40 @@ export interface paths {
         };
         /** Retrieve a route */
         get: operations["getRoute"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/routes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Routes */
+        get: operations["listRoutes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/routes/{routeId}/stops": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List stops */
+        get: operations["listRouteStops"];
         put?: never;
         post?: never;
         delete?: never;
@@ -579,6 +653,102 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create a new member
+         * @description Create a member with the given data in your team. Prefer using the [batch import endpoint](#operation/importMembers) for creating multiple members at once as it is more efficient.
+         */
+        post: operations["createMember"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/members/{memberId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove a member
+         * @description Removes a member from your team. If the member also has driver access, the member will only have their operational role(s) revoked; thus not being listed among the team members, but will keep their driver access.
+         */
+        delete: operations["deleteMember"];
+        options?: never;
+        head?: never;
+        /**
+         * Update a member
+         * @description Updates a member from your team.
+         */
+        patch: operations["updateMember"];
+        trace?: never;
+    };
+    "/members:import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Import multiple members
+         * @description Import multiple members at once.
+         */
+        post: operations["importMembers"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/stops:search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Stop Search
+         * @description See the [Stops Search docs](/api/v1#section/Using-the-API/Stop-Search-API) for more information on formatting the filter string.
+         *             The following fields are supported for filters:
+         *       - `address` - The full address (string)
+         *       - `address.lineOne` - Address line one (string)
+         *       - `address.lineTwo` - Address line two (string)
+         *       - `address.latitude` - Latitude of the address (number)
+         *       - `address.longitude` - Longitude of the address (number)
+         *       - `address.placeId` - Google PlaceID of the address (string)
+         *       - `address.countryCode` - Country code of the address (string)
+         *       - `activity` - Activity type `delivery` or `pickup` (enum)
+         *       - `createdAt` - Stop creation timestamp (ISO 8601 string)
+         *       - `arrivalTime` - Expected driver arrival time where applicable (ISO 8601 string)
+         *       - `custom_properties.[property ID]` - A custom property. Requires a custom property ID (string)
+         */
+        get: operations["searchStops"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -598,6 +768,39 @@ export interface components {
         depotSchema: {
             id: components["schemas"]["depotIdSchema"];
             name: string;
+            routeOverrides: {
+                startTime: {
+                    hour: number;
+                    minute: number;
+                };
+                startAddress: {
+                    address: string | null;
+                    addressLineOne: string | null;
+                    addressLineTwo: string | null;
+                    latitude: number | null;
+                    longitude: number | null;
+                    placeId: string | null;
+                    countryCode: string | null;
+                };
+                defaultTimeAtStop?: number | null;
+                endAddress?: {
+                    address: string | null;
+                    addressLineOne: string | null;
+                    addressLineTwo: string | null;
+                    latitude: number | null;
+                    longitude: number | null;
+                    placeId: string | null;
+                    countryCode: string | null;
+                } | null;
+                endTime?: {
+                    hour: number;
+                    minute: number;
+                } | null;
+                maxStops?: number | null;
+                roadSide?: ("any" | "left_only" | "right_only") | null;
+                vehicleType?: ("bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike") | null;
+                roundTrip?: boolean | null;
+            } | null;
         };
         driverIdSchema: string;
         driverSchema: {
@@ -637,6 +840,18 @@ export interface components {
                 vehicleType: ("bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike") | null;
             };
         };
+        memberIdSchema: string;
+        memberSchema: {
+            id: components["schemas"]["memberIdSchema"];
+            name: string | null;
+            email: string | null;
+            phone: string | null;
+            linkedDriverId: components["schemas"]["driverIdSchema"] | null;
+            displayName: string | null;
+            active: boolean;
+            depots: string[];
+            roles: components["schemas"]["roleSchema"];
+        };
         operationIdSchema: string;
         operationSchema: {
             id: components["schemas"]["operationIdSchema"];
@@ -670,9 +885,47 @@ export interface components {
             distributed: boolean;
             writable: boolean;
             optimization: ("creating" | "editing" | "preview" | "optimized" | "optimizing") | null;
-            drivers: components["schemas"]["driverSchema"][];
+            drivers: components["schemas"]["driverIdSchema"][];
             routes: components["schemas"]["routeIdSchema"][];
+            routeOverrides: {
+                startTime: {
+                    hour: number;
+                    minute: number;
+                } | null;
+                endTime: {
+                    hour: number;
+                    minute: number;
+                } | null;
+                startAddress: {
+                    address: string;
+                    addressLineOne: string;
+                    addressLineTwo: string;
+                    latitude: number | null;
+                    longitude: number | null;
+                    placeId: string | null;
+                    placeTypes: string[];
+                } | null;
+                endAddress: {
+                    address: string;
+                    addressLineOne: string;
+                    addressLineTwo: string;
+                    latitude: number | null;
+                    longitude: number | null;
+                    placeId: string | null;
+                    placeTypes: string[];
+                } | null;
+                maxStops: number | null;
+                drivingSpeed: ("slower" | "average" | "faster") | null;
+                deliverySpeed: ("slower" | "average" | "faster") | null;
+                vehicleType: ("bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike") | null;
+                optimizationSettings: {
+                    /** @enum {string} */
+                    objective: "minimize_drivers" | "distribute_services";
+                    subObjective?: ("equalize_workload" | "equalize_time" | "maximize_efficiency") | null;
+                };
+            } | null;
         };
+        roleSchema: ("owner" | "admin" | "depot-manager" | "dispatcher" | "read-only" | "driver")[];
         routeIdSchema: string;
         routeSchema: {
             id: components["schemas"]["routeIdSchema"];
@@ -704,8 +957,7 @@ export interface components {
                 placeTypes: string[];
             };
             barcodes: string[];
-            driverIdentifier: string | null;
-            allowedDriversIdentifiers: string[];
+            allowedDrivers: string[];
             estimatedTravelDuration: number | null;
             estimatedTravelDistance: number | null;
             notes: string | null;
@@ -748,16 +1000,26 @@ export interface components {
                 attemptedAt: number | null;
                 arrivedAt: number | null;
                 timeAtStopInfo: {
-                    arrivedAt: number | null;
-                    departedAt: number | null;
-                    isEstimated: boolean | null;
-                } | null;
-                timeAtStopInfoNullReason: {
                     /** @enum {string} */
-                    reason: "subscription_not_supported";
-                    message: string;
-                    url: string | null;
-                } | null;
+                    status: "available";
+                    value: {
+                        arrivedAt: number | null;
+                        departedAt: number | null;
+                        isEstimated: boolean | null;
+                    };
+                } | {
+                    /** @enum {string} */
+                    status: "restricted";
+                    requiredFeature?: string;
+                    upgradeUrl?: string;
+                    /** @enum {string} */
+                    restrictionCode?: "subscription_not_supported";
+                } | {
+                    /** @enum {string} */
+                    status: "pending";
+                    /** @enum {string} */
+                    pendingReason?: "not_yet_arrived";
+                };
                 attemptedLocation: {
                     latitude: number;
                     longitude: number;
@@ -782,16 +1044,26 @@ export interface components {
             plan: components["schemas"]["planIdSchema"];
             route: components["schemas"]["routeSchema"] | null;
             eta: {
-                estimatedArrivalAt: number;
-                estimatedLatestArrivalAt: number;
-                estimatedEarliestArrivalAt: number;
-            } | null;
-            etaNullReason: {
                 /** @enum {string} */
-                reason: "not_optimized" | "subscription_not_supported";
-                message: string;
-                url: string | null;
-            } | null;
+                status: "available";
+                value: {
+                    estimatedArrivalAt: number;
+                    estimatedLatestArrivalAt: number;
+                    estimatedEarliestArrivalAt: number;
+                };
+            } | {
+                /** @enum {string} */
+                status: "restricted";
+                requiredFeature?: string;
+                upgradeUrl?: string;
+                /** @enum {string} */
+                restrictionCode?: "subscription_not_supported";
+            } | {
+                /** @enum {string} */
+                status: "pending";
+                /** @enum {string} */
+                pendingReason?: "not_optimized";
+            };
             timing: {
                 estimatedAttemptDuration: number | null;
                 earliestAttemptTime: components["schemas"]["timeOfDaySchema"] | null;
@@ -825,7 +1097,7 @@ export interface components {
                 placeTypes: string[];
             };
             barcodes: string[];
-            allowedDriversIdentifiers: string[];
+            allowedDrivers: string[];
             notes: string | null;
             packageCount: number | null;
             weight: {
@@ -1001,6 +1273,95 @@ export interface operations {
                     drivers?: string[];
                     /** @description The depot id, in the format `depots/<id>`. If not provided, the team's Main Depot will be used. */
                     depot?: string | null;
+                    /** @description Overrides for the plan route behavior. */
+                    routeOverrides?: {
+                        /** @description Address of a start location for every route in this plan. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
+                        startAddress?: {
+                            /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
+                            addressName?: string | null;
+                            /** @description The first line of the address. */
+                            addressLineOne?: string | null;
+                            /** @description The second line of the address. */
+                            addressLineTwo?: string | null;
+                            /** @description The city of the address. */
+                            city?: string | null;
+                            /** @description The state of the address. */
+                            state?: string | null;
+                            /** @description The zip code of the address. */
+                            zip?: string | null;
+                            /** @description The country of the address. */
+                            country?: string | null;
+                            /** @description The latitude of the address in decimal degrees. */
+                            latitude?: number | null;
+                            /** @description The longitude of the address in decimal degrees. */
+                            longitude?: number | null;
+                        } | null;
+                        /** @description Address of an end location for every route in this plan. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
+                        endAddress?: {
+                            /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
+                            addressName?: string | null;
+                            /** @description The first line of the address. */
+                            addressLineOne?: string | null;
+                            /** @description The second line of the address. */
+                            addressLineTwo?: string | null;
+                            /** @description The city of the address. */
+                            city?: string | null;
+                            /** @description The state of the address. */
+                            state?: string | null;
+                            /** @description The zip code of the address. */
+                            zip?: string | null;
+                            /** @description The country of the address. */
+                            country?: string | null;
+                            /** @description The latitude of the address in decimal degrees. */
+                            latitude?: number | null;
+                            /** @description The longitude of the address in decimal degrees. */
+                            longitude?: number | null;
+                        } | null;
+                        /** @description The start time for the driver's work day. */
+                        startTime?: {
+                            /** @description Hour of the day */
+                            hour: number;
+                            /** @description Minute of the hour */
+                            minute: number;
+                        } | null;
+                        /** @description The end time for the driver's work day. */
+                        endTime?: {
+                            /** @description Hour of the day */
+                            hour: number;
+                            /** @description Minute of the hour */
+                            minute: number;
+                        } | null;
+                        /** @description The maximum number of stops that can be allocated per route. Note that this setting will be ignored when vehicle capacity or pickups are being used. */
+                        maxStops?: number | null;
+                        /**
+                         * @description How fast drivers drive compared to the Team's average
+                         * @enum {string|null}
+                         */
+                        drivingSpeed?: "slower" | "average" | "faster" | null;
+                        /**
+                         * @description How fast drivers deliver compared to the Team's average
+                         * @enum {string|null}
+                         */
+                        deliverySpeed?: "slower" | "average" | "faster" | null;
+                        /**
+                         * @description The type of vehicle used for routes in this plan
+                         * @enum {string|null}
+                         */
+                        vehicleType?: "bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike" | null;
+                        /** @description Optimization settings for the plan. */
+                        optimizationSettings?: {
+                            /**
+                             * @description The primary optimization objective.
+                             * @enum {string|null}
+                             */
+                            objective?: "distribute_services" | null;
+                            /**
+                             * @description The secondary optimization objective.
+                             * @enum {string|null}
+                             */
+                            subObjective?: "equalize_workload" | "equalize_time" | "maximize_efficiency" | null;
+                        } | null;
+                    } | null;
                 };
             };
         };
@@ -1354,6 +1715,95 @@ export interface operations {
                     drivers?: string[];
                     /** @description The depot id, in the format `depots/<id>`. If not provided, the team's Main Depot will be used. */
                     depot?: string | null;
+                    /** @description Overrides for the plan route behavior. */
+                    routeOverrides?: {
+                        /** @description Address of a start location for every route in this plan. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
+                        startAddress?: {
+                            /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
+                            addressName?: string | null;
+                            /** @description The first line of the address. */
+                            addressLineOne?: string | null;
+                            /** @description The second line of the address. */
+                            addressLineTwo?: string | null;
+                            /** @description The city of the address. */
+                            city?: string | null;
+                            /** @description The state of the address. */
+                            state?: string | null;
+                            /** @description The zip code of the address. */
+                            zip?: string | null;
+                            /** @description The country of the address. */
+                            country?: string | null;
+                            /** @description The latitude of the address in decimal degrees. */
+                            latitude?: number | null;
+                            /** @description The longitude of the address in decimal degrees. */
+                            longitude?: number | null;
+                        } | null;
+                        /** @description Address of an end location for every route in this plan. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
+                        endAddress?: {
+                            /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
+                            addressName?: string | null;
+                            /** @description The first line of the address. */
+                            addressLineOne?: string | null;
+                            /** @description The second line of the address. */
+                            addressLineTwo?: string | null;
+                            /** @description The city of the address. */
+                            city?: string | null;
+                            /** @description The state of the address. */
+                            state?: string | null;
+                            /** @description The zip code of the address. */
+                            zip?: string | null;
+                            /** @description The country of the address. */
+                            country?: string | null;
+                            /** @description The latitude of the address in decimal degrees. */
+                            latitude?: number | null;
+                            /** @description The longitude of the address in decimal degrees. */
+                            longitude?: number | null;
+                        } | null;
+                        /** @description The start time for the driver's work day. */
+                        startTime?: {
+                            /** @description Hour of the day */
+                            hour: number;
+                            /** @description Minute of the hour */
+                            minute: number;
+                        } | null;
+                        /** @description The end time for the driver's work day. */
+                        endTime?: {
+                            /** @description Hour of the day */
+                            hour: number;
+                            /** @description Minute of the hour */
+                            minute: number;
+                        } | null;
+                        /** @description The maximum number of stops that can be allocated per route. Note that this setting will be ignored when vehicle capacity or pickups are being used. */
+                        maxStops?: number | null;
+                        /**
+                         * @description How fast drivers drive compared to the Team's average
+                         * @enum {string|null}
+                         */
+                        drivingSpeed?: "slower" | "average" | "faster" | null;
+                        /**
+                         * @description How fast drivers deliver compared to the Team's average
+                         * @enum {string|null}
+                         */
+                        deliverySpeed?: "slower" | "average" | "faster" | null;
+                        /**
+                         * @description The type of vehicle used for routes in this plan
+                         * @enum {string|null}
+                         */
+                        vehicleType?: "bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike" | null;
+                        /** @description Optimization settings for the plan. */
+                        optimizationSettings?: {
+                            /**
+                             * @description The primary optimization objective.
+                             * @enum {string|null}
+                             */
+                            objective?: "distribute_services" | null;
+                            /**
+                             * @description The secondary optimization objective.
+                             * @enum {string|null}
+                             */
+                            subObjective?: "equalize_workload" | "equalize_time" | "maximize_efficiency" | null;
+                        } | null;
+                    } | null;
                 };
             };
         };
@@ -1437,6 +1887,19 @@ export interface operations {
                         message: "Plan is not writable";
                         /** @enum {string} */
                         code: "plan_not_writable";
+                    };
+                };
+            };
+            /** @description Default Response */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        message: "Driver does not share depot with plan";
+                        param?: string;
                     };
                 };
             };
@@ -2284,6 +2747,7 @@ export interface operations {
             };
             cookie?: never;
         };
+        /** @description The request body for creating a stop. The only required field is address, you need to provide at least one of the fields in it. The latitude and longitude fields will override any of the other fields if they are set(and they need to be both set if any of them are). The more fields you provide the more accurate the geocoding will be. */
         requestBody: {
             content: {
                 "application/json": {
@@ -2363,12 +2827,7 @@ export interface operations {
                         /** @description Whether proof of attempt is required for this stop */
                         enabled?: boolean | null;
                     } | null;
-                    /**
-                     * @description Deprecated. Prefer using the `allowedDrivers` field instead.
-                     *     Driver ID that should be assigned to this stop. If not provided, the stop will be assigned to any available driver during optimization. This field is mutually exclusive with the `allowedDrivers` field.
-                     */
-                    driver?: string | null;
-                    /** @description Driver IDs that are allowed to be assigned to this stop. If not provided, the stop will be assigned to any available driver during optimization. This field is mutually exclusive with the `driver` field. When the stop is first created, all the drivers in this list will be added to the plan as well. If the stop is updated, no changes will be made to the plan, so if you want to add a driver to the plan, you must also add them to the plan separately, if they are not already. */
+                    /** @description Driver IDs that are allowed to be assigned to this stop. These drivers must be configured as part of the plan to be valid. */
                     allowedDrivers?: string[] | null;
                     /**
                      * @description Activity type
@@ -2508,6 +2967,19 @@ export interface operations {
                 };
             };
             /** @description Default Response */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        message: "Driver is not linked to plan";
+                        param?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -2638,12 +3110,7 @@ export interface operations {
                         /** @description Whether proof of attempt is required for this stop */
                         enabled?: boolean | null;
                     } | null;
-                    /**
-                     * @description Deprecated. Prefer using the `allowedDrivers` field instead.
-                     *     Driver ID that should be assigned to this stop. If not provided, the stop will be assigned to any available driver during optimization. This field is mutually exclusive with the `allowedDrivers` field.
-                     */
-                    driver?: string | null;
-                    /** @description Driver IDs that are allowed to be assigned to this stop. If not provided, the stop will be assigned to any available driver during optimization. This field is mutually exclusive with the `driver` field. When the stop is first created, all the drivers in this list will be added to the plan as well. If the stop is updated, no changes will be made to the plan, so if you want to add a driver to the plan, you must also add them to the plan separately, if they are not already. */
+                    /** @description Driver IDs that are allowed to be assigned to this stop. These drivers must be configured as part of the plan to be valid. */
                     allowedDrivers?: string[] | null;
                     /**
                      * @description Activity type
@@ -2805,6 +3272,19 @@ export interface operations {
                     "application/json": {
                         /** @enum {string} */
                         message: "Failed to create stop. Some related resources were deleted while the request was being processed.";
+                    };
+                };
+            };
+            /** @description Default Response */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        message: "Driver is not linked to plan";
+                        param?: string;
                     };
                 };
             };
@@ -3085,6 +3565,7 @@ export interface operations {
             };
             cookie?: never;
         };
+        /** @description The request body for updating a stop. All the values present in the request will update the stop value, if you wish to update only certain fields, only set them and do not set the others. Any fields not set will not be updated. */
         requestBody?: {
             content: {
                 "application/json": {
@@ -3125,12 +3606,7 @@ export interface operations {
                         /** @description Whether proof of attempt is required for this stop */
                         enabled?: boolean | null;
                     } | null;
-                    /**
-                     * @description Deprecated. Prefer using the `allowedDrivers` field instead.
-                     *     Driver ID that should be assigned to this stop. If not provided, the stop will be assigned to any available driver during optimization. This field is mutually exclusive with the `allowedDrivers` field.
-                     */
-                    driver?: string | null;
-                    /** @description Driver IDs that are allowed to be assigned to this stop. If not provided, the stop will be assigned to any available driver during optimization. This field is mutually exclusive with the `driver` field. When the stop is first created, all the drivers in this list will be added to the plan as well. If the stop is updated, no changes will be made to the plan, so if you want to add a driver to the plan, you must also add them to the plan separately, if they are not already. */
+                    /** @description Driver IDs that are allowed to be assigned to this stop. These drivers must be configured as part of the plan to be valid. */
                     allowedDrivers?: string[] | null;
                     /**
                      * @description Activity type
@@ -3274,6 +3750,30 @@ export interface operations {
                 };
             };
             /** @description Default Response */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        message: "Driver is not linked to plan";
+                        param?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: "An error occurred when creating the stop, but the error is not due to a validation error, instead it is another conflict, check if the provided data is semantically valid." | string;
+                    };
+                };
+            };
+            /** @description Default Response */
             500: {
                 headers: {
                     [name: string]: unknown;
@@ -3313,6 +3813,7 @@ export interface operations {
             };
             cookie?: never;
         };
+        /** @description The request body for creating a stop. The only required field is address, you need to provide at least one of the fields in it. The latitude and longitude fields will override any of the other fields if they are set(and they need to be both set if any of them are). The more fields you provide the more accurate the geocoding will be. */
         requestBody: {
             content: {
                 "application/json": {
@@ -3392,12 +3893,7 @@ export interface operations {
                         /** @description Whether proof of attempt is required for this stop */
                         enabled?: boolean | null;
                     } | null;
-                    /**
-                     * @description Deprecated. Prefer using the `allowedDrivers` field instead.
-                     *     Driver ID that should be assigned to this stop. If not provided, the stop will be assigned to any available driver during optimization. This field is mutually exclusive with the `allowedDrivers` field.
-                     */
-                    driver?: string | null;
-                    /** @description Driver IDs that are allowed to be assigned to this stop. If not provided, the stop will be assigned to any available driver during optimization. This field is mutually exclusive with the `driver` field. When the stop is first created, all the drivers in this list will be added to the plan as well. If the stop is updated, no changes will be made to the plan, so if you want to add a driver to the plan, you must also add them to the plan separately, if they are not already. */
+                    /** @description Driver IDs that are allowed to be assigned to this stop. These drivers must be configured as part of the plan to be valid. */
                     allowedDrivers?: string[] | null;
                     /**
                      * @description Activity type
@@ -3592,6 +4088,7 @@ export interface operations {
             };
             cookie?: never;
         };
+        /** @description The request body for updating a stop. All the values present in the request will update the stop value, if you wish to update only certain fields, only set them and do not set the others. Any fields not set will not be updated. */
         requestBody?: {
             content: {
                 "application/json": {
@@ -3632,12 +4129,7 @@ export interface operations {
                         /** @description Whether proof of attempt is required for this stop */
                         enabled?: boolean | null;
                     } | null;
-                    /**
-                     * @description Deprecated. Prefer using the `allowedDrivers` field instead.
-                     *     Driver ID that should be assigned to this stop. If not provided, the stop will be assigned to any available driver during optimization. This field is mutually exclusive with the `allowedDrivers` field.
-                     */
-                    driver?: string | null;
-                    /** @description Driver IDs that are allowed to be assigned to this stop. If not provided, the stop will be assigned to any available driver during optimization. This field is mutually exclusive with the `driver` field. When the stop is first created, all the drivers in this list will be added to the plan as well. If the stop is updated, no changes will be made to the plan, so if you want to add a driver to the plan, you must also add them to the plan separately, if they are not already. */
+                    /** @description Driver IDs that are allowed to be assigned to this stop. These drivers must be configured as part of the plan to be valid. */
                     allowedDrivers?: string[] | null;
                     /**
                      * @description Activity type
@@ -3783,6 +4275,19 @@ export interface operations {
                     };
                 };
             };
+            /** @description Default Response */
+            412: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        message: "Driver is not linked to plan";
+                        param?: string;
+                    };
+                };
+            };
             /** @description The stop is unprocessable. */
             422: {
                 headers: {
@@ -3918,12 +4423,7 @@ export interface operations {
                         /** @description Whether proof of attempt is required for this stop */
                         enabled?: boolean | null;
                     } | null;
-                    /**
-                     * @description Deprecated. Prefer using the `allowedDrivers` field instead.
-                     *     Driver ID that should be assigned to this stop. If not provided, the stop will be assigned to any available driver during optimization. This field is mutually exclusive with the `allowedDrivers` field.
-                     */
-                    driver?: string | null;
-                    /** @description Driver IDs that are allowed to be assigned to this stop. If not provided, the stop will be assigned to any available driver during optimization. This field is mutually exclusive with the `driver` field. When the stop is first created, all the drivers in this list will be added to the plan as well. If the stop is updated, no changes will be made to the plan, so if you want to add a driver to the plan, you must also add them to the plan separately, if they are not already. */
+                    /** @description Driver IDs that are allowed to be assigned to this stop. These drivers must be configured as part of the plan to be valid. */
                     allowedDrivers?: string[] | null;
                     /**
                      * @description Activity type
@@ -5200,6 +5700,164 @@ export interface operations {
             };
         };
     };
+    createDepot: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    name: string;
+                    /** @description Defines some default parameters for routes originating from this depot */
+                    routeOverrides: {
+                        startAddress: {
+                            /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
+                            addressName?: string | null;
+                            /** @description The first line of the address. */
+                            addressLineOne?: string | null;
+                            /** @description The second line of the address. */
+                            addressLineTwo?: string | null;
+                            /** @description The city of the address. */
+                            city?: string | null;
+                            /** @description The state of the address. */
+                            state?: string | null;
+                            /** @description The zip code of the address. */
+                            zip?: string | null;
+                            /** @description The country of the address. */
+                            country?: string | null;
+                            /** @description The latitude of the address in decimal degrees. */
+                            latitude?: number | null;
+                            /** @description The longitude of the address in decimal degrees. */
+                            longitude?: number | null;
+                        };
+                        /** @description Route start time */
+                        startTime: {
+                            /** @description Hour of the day */
+                            hour: number;
+                            /** @description Minute of the hour */
+                            minute: number;
+                        };
+                        endAddress?: {
+                            /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
+                            addressName?: string | null;
+                            /** @description The first line of the address. */
+                            addressLineOne?: string | null;
+                            /** @description The second line of the address. */
+                            addressLineTwo?: string | null;
+                            /** @description The city of the address. */
+                            city?: string | null;
+                            /** @description The state of the address. */
+                            state?: string | null;
+                            /** @description The zip code of the address. */
+                            zip?: string | null;
+                            /** @description The country of the address. */
+                            country?: string | null;
+                            /** @description The latitude of the address in decimal degrees. */
+                            latitude?: number | null;
+                            /** @description The longitude of the address in decimal degrees. */
+                            longitude?: number | null;
+                        } | null;
+                        /** @description Time of day in hours and minutes. Uses a 24 hour clock. */
+                        endTime?: {
+                            /** @description Hour of the day */
+                            hour: number;
+                            /** @description Minute of the hour */
+                            minute: number;
+                        } | null;
+                        /** @description Estimated time at the stop */
+                        defaultTimeAtStop?: number | null;
+                        /** @description Maximum number of stops per driver */
+                        maxStops?: number | null;
+                        /**
+                         * @description Default vehicle type
+                         * @enum {string|null}
+                         */
+                        vehicleType?: "bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike" | null;
+                        /**
+                         * @description Attempt to visit stops on this side of the road
+                         * @enum {string|null}
+                         */
+                        roadSide?: "any" | "left_only" | "right_only" | null;
+                        /** @description Return to the startAddress at the end of the route */
+                        roundTrip?: boolean | null;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description The requested depot */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["depotSchema"];
+                };
+            };
+            /** @description The request was invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    } | {
+                        message: string;
+                        code?: string;
+                        param: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+        };
+    };
     getDepot: {
         parameters: {
             query?: never;
@@ -5289,6 +5947,531 @@ export interface operations {
             };
         };
     };
+    deleteDepot: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The depot id */
+                depotId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Depot removed successfully */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The request was invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    } | {
+                        /** @enum {string} */
+                        message: "Depot cannot be deleted";
+                    };
+                };
+            };
+            /** @description Default Response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+        };
+    };
+    updateDepot: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The depot id */
+                depotId: string;
+            };
+            cookie?: never;
+        };
+        /** @description The request body for updating a depot. All the values present in the request will update the depot value; if you wish to update only certain fields, only set them and do not set the others. Any fields not set will not be updated. */
+        requestBody?: {
+            content: {
+                "application/json": {
+                    name?: string;
+                    routeOverrides?: {
+                        startAddress?: {
+                            /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
+                            addressName?: string | null;
+                            /** @description The first line of the address. */
+                            addressLineOne?: string | null;
+                            /** @description The second line of the address. */
+                            addressLineTwo?: string | null;
+                            /** @description The city of the address. */
+                            city?: string | null;
+                            /** @description The state of the address. */
+                            state?: string | null;
+                            /** @description The zip code of the address. */
+                            zip?: string | null;
+                            /** @description The country of the address. */
+                            country?: string | null;
+                            /** @description The latitude of the address in decimal degrees. */
+                            latitude?: number | null;
+                            /** @description The longitude of the address in decimal degrees. */
+                            longitude?: number | null;
+                        };
+                        /** @description Route start time */
+                        startTime?: {
+                            /** @description Hour of the day */
+                            hour: number;
+                            /** @description Minute of the hour */
+                            minute: number;
+                        };
+                        endAddress?: {
+                            /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
+                            addressName?: string | null;
+                            /** @description The first line of the address. */
+                            addressLineOne?: string | null;
+                            /** @description The second line of the address. */
+                            addressLineTwo?: string | null;
+                            /** @description The city of the address. */
+                            city?: string | null;
+                            /** @description The state of the address. */
+                            state?: string | null;
+                            /** @description The zip code of the address. */
+                            zip?: string | null;
+                            /** @description The country of the address. */
+                            country?: string | null;
+                            /** @description The latitude of the address in decimal degrees. */
+                            latitude?: number | null;
+                            /** @description The longitude of the address in decimal degrees. */
+                            longitude?: number | null;
+                        } | null;
+                        /** @description Time of day in hours and minutes. Uses a 24 hour clock. */
+                        endTime?: {
+                            /** @description Hour of the day */
+                            hour: number;
+                            /** @description Minute of the hour */
+                            minute: number;
+                        } | null;
+                        /** @description Estimated time at the stop */
+                        defaultTimeAtStop?: number | null;
+                        /** @description Maximum number of stops per driver */
+                        maxStops?: number | null;
+                        /**
+                         * @description Default vehicle type
+                         * @enum {string|null}
+                         */
+                        vehicleType?: "bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike" | null;
+                        /**
+                         * @description Attempt to visit stops on this side of the road
+                         * @enum {string|null}
+                         */
+                        roadSide?: "any" | "left_only" | "right_only" | null;
+                        /** @description Return to the startAddress at the end of the route */
+                        roundTrip?: boolean | null;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description The updated depot */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["depotSchema"];
+                };
+            };
+            /** @description The request was invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    } | {
+                        message: string;
+                        code?: string;
+                        param: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        message: "Depot not found";
+                    };
+                };
+            };
+            /** @description Default Response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+        };
+    };
+    importDepots: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description An array of depots to import in batch. Supports a maximum of 100 depots per request. */
+        requestBody?: {
+            content: {
+                "application/json": {
+                    name: string;
+                    /** @description Defines some default parameters for routes originating from this depot */
+                    routeOverrides: {
+                        startAddress: {
+                            /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
+                            addressName?: string | null;
+                            /** @description The first line of the address. */
+                            addressLineOne?: string | null;
+                            /** @description The second line of the address. */
+                            addressLineTwo?: string | null;
+                            /** @description The city of the address. */
+                            city?: string | null;
+                            /** @description The state of the address. */
+                            state?: string | null;
+                            /** @description The zip code of the address. */
+                            zip?: string | null;
+                            /** @description The country of the address. */
+                            country?: string | null;
+                            /** @description The latitude of the address in decimal degrees. */
+                            latitude?: number | null;
+                            /** @description The longitude of the address in decimal degrees. */
+                            longitude?: number | null;
+                        };
+                        /** @description Route start time */
+                        startTime: {
+                            /** @description Hour of the day */
+                            hour: number;
+                            /** @description Minute of the hour */
+                            minute: number;
+                        };
+                        endAddress?: {
+                            /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
+                            addressName?: string | null;
+                            /** @description The first line of the address. */
+                            addressLineOne?: string | null;
+                            /** @description The second line of the address. */
+                            addressLineTwo?: string | null;
+                            /** @description The city of the address. */
+                            city?: string | null;
+                            /** @description The state of the address. */
+                            state?: string | null;
+                            /** @description The zip code of the address. */
+                            zip?: string | null;
+                            /** @description The country of the address. */
+                            country?: string | null;
+                            /** @description The latitude of the address in decimal degrees. */
+                            latitude?: number | null;
+                            /** @description The longitude of the address in decimal degrees. */
+                            longitude?: number | null;
+                        } | null;
+                        /** @description Time of day in hours and minutes. Uses a 24 hour clock. */
+                        endTime?: {
+                            /** @description Hour of the day */
+                            hour: number;
+                            /** @description Minute of the hour */
+                            minute: number;
+                        } | null;
+                        /** @description Estimated time at the stop */
+                        defaultTimeAtStop?: number | null;
+                        /** @description Maximum number of stops per driver */
+                        maxStops?: number | null;
+                        /**
+                         * @description Default vehicle type
+                         * @enum {string|null}
+                         */
+                        vehicleType?: "bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike" | null;
+                        /**
+                         * @description Attempt to visit stops on this side of the road
+                         * @enum {string|null}
+                         */
+                        roadSide?: "any" | "left_only" | "right_only" | null;
+                        /** @description Return to the startAddress at the end of the route */
+                        roundTrip?: boolean | null;
+                    };
+                }[];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: string[];
+                        failed: {
+                            error: {
+                                message: string;
+                            };
+                            depot: {
+                                name: string;
+                                routeOverrides: {
+                                    startAddress: {
+                                        addressName?: string | null;
+                                        addressLineOne?: string | null;
+                                        addressLineTwo?: string | null;
+                                        city?: string | null;
+                                        state?: string | null;
+                                        zip?: string | null;
+                                        country?: string | null;
+                                        latitude?: number | null;
+                                        longitude?: number | null;
+                                    };
+                                    startTime: {
+                                        hour: number;
+                                        minute: number;
+                                    };
+                                    endAddress?: {
+                                        addressName?: string | null;
+                                        addressLineOne?: string | null;
+                                        addressLineTwo?: string | null;
+                                        city?: string | null;
+                                        state?: string | null;
+                                        zip?: string | null;
+                                        country?: string | null;
+                                        latitude?: number | null;
+                                        longitude?: number | null;
+                                    } | null;
+                                    endTime?: {
+                                        hour: number;
+                                        minute: number;
+                                    } | null;
+                                    defaultTimeAtStop?: number | null;
+                                    maxStops?: number | null;
+                                    vehicleType?: ("bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike") | null;
+                                    roadSide?: ("any" | "left_only" | "right_only") | null;
+                                    roundTrip?: boolean | null;
+                                };
+                            };
+                        }[];
+                    };
+                };
+            };
+            /** @description The request has errors. Either syntactic or semantic */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+        };
+    };
+    setMainDepot: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The depot id */
+                depotId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Depot set as main successfully */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default Response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        message: "Depot not found";
+                    };
+                };
+            };
+            /** @description Default Response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+        };
+    };
     getRoute: {
         parameters: {
             query?: never;
@@ -5311,6 +6494,204 @@ export interface operations {
                 };
             };
             /** @description ID format is invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        message: "Route is no longer accessible due to data access restrictions.";
+                        /** @enum {string} */
+                        code: "route_inaccessible";
+                    };
+                };
+            };
+            /** @description Default Response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        message: "Route not found";
+                    };
+                };
+            };
+            /** @description Default Response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+        };
+    };
+    listRoutes: {
+        parameters: {
+            query?: {
+                /** @description The page token to continue from. */
+                pageToken?: string;
+                /** @description The maximum number of routes to return. */
+                maxPageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        routes: components["schemas"]["routeSchema"][];
+                        nextPageToken: string | null;
+                    };
+                };
+            };
+            /** @description Query parameters are invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+        };
+    };
+    listRouteStops: {
+        parameters: {
+            query?: {
+                /** @description The page token, if any. */
+                pageToken?: string;
+                /** @description The max page size. */
+                maxPageSize?: number;
+                /** @description The filter to apply to the list of stops. The filter params are passed like this: `?filter[externalId]=foo` or like this: `?filter.externalId=foo` */
+                filter?: {
+                    /** @description Filter by the `recipient.externalId` field, exact match */
+                    externalId?: string;
+                };
+            };
+            header?: never;
+            path: {
+                /** @description The route id */
+                routeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        stops: components["schemas"]["stopSchema"][];
+                        nextPageToken: string | null;
+                    };
+                };
+            };
+            /** @description Query parameters are invalid */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -6757,6 +8138,590 @@ export interface operations {
                 content: {
                     "application/json": {
                         message: "Custom stop property not found" | string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+        };
+    };
+    createMember: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description The member's full name */
+                    name?: string | null;
+                    /** @description The name displayed for the member in the UI */
+                    displayName?: string | null;
+                    /**
+                     * Format: email
+                     * @description Member's email
+                     */
+                    email?: string | null;
+                    /** @description The existing driver to link the member to */
+                    linkedDriverId?: string | null;
+                    /**
+                     * @description The operational role given to the member.
+                     * @enum {string}
+                     */
+                    role: "admin" | "depot-manager" | "dispatcher" | "read-only";
+                    /** @description The depot IDs associated with the member in the format `depots/<id>`, duplicates will be ignored. If set to null or not provided, the team's Main depot will be set as member depot. */
+                    depots?: string[] | null;
+                };
+            };
+        };
+        responses: {
+            /** @description The created member */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["memberSchema"];
+                };
+            };
+            /** @description Default Response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: "The member could not be created because of a conflict, such as a member already existing with the same email." | string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: "An error occured when creating the member, but the error is not due to a validation error, instead it is another conflict, check if the provided data is semantically valid." | string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+        };
+    };
+    deleteMember: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The member id */
+                memberId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Member removed successfully */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description ID format is invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: "Member not found" | string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+        };
+    };
+    updateMember: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The member id */
+                memberId: string;
+            };
+            cookie?: never;
+        };
+        /** @description The request body for updating a member. */
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /** @description The member's full name */
+                    name?: string | null;
+                    /** @description The name displayed for the member in the UI */
+                    displayName?: string | null;
+                    /**
+                     * @description The operational role given to the member.
+                     * @enum {string|null}
+                     */
+                    role?: "admin" | "depot-manager" | "dispatcher" | "read-only" | null;
+                    /** @description The depot IDs associated with the member in the format `depots/<id>`, duplicates will be ignored. If set to null or not provided, the team's Main depot will be set as member depot. */
+                    depots?: string[] | null;
+                };
+            };
+        };
+        responses: {
+            /** @description The updated member */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["memberSchema"];
+                };
+            };
+            /** @description Default Response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: "Member not found" | string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: "An error occured when updating the member, but the error is not due to a validation error, instead it is another conflict, check if the provided data is semantically valid." | string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+        };
+    };
+    importMembers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description An array of member descriptions to be created in batch. */
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /** @description The member's full name */
+                    name?: string | null;
+                    /** @description The name displayed for the member in the UI */
+                    displayName?: string | null;
+                    /**
+                     * Format: email
+                     * @description Member's email
+                     */
+                    email?: string | null;
+                    /** @description The existing driver to link the member to */
+                    linkedDriverId?: string | null;
+                    /**
+                     * @description The operational role given to the member.
+                     * @enum {string}
+                     */
+                    role: "admin" | "depot-manager" | "dispatcher" | "read-only";
+                    /** @description The depot IDs associated with the member in the format `depots/<id>`, duplicates will be ignored. If set to null or not provided, the team's Main depot will be set as member depot. */
+                    depots?: string[] | null;
+                }[];
+            };
+        };
+        responses: {
+            /** @description The imported members */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: string[];
+                        failed: {
+                            error: {
+                                message: string;
+                            };
+                            member: {
+                                name?: string | null;
+                                displayName?: string | null;
+                                email?: string | null;
+                                linkedDriverId?: string | null;
+                                /** @enum {string} */
+                                role: "admin" | "depot-manager" | "dispatcher" | "read-only";
+                                depots?: string[] | null;
+                            };
+                        }[];
+                    };
+                };
+            };
+            /** @description Default Response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: "The member could not be created because of a conflict, such as a member already existing with the same email." | string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: "An error occured when importing members, but the error is not due to a validation error, instead it is another conflict, check if the provided data is semantically valid." | string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    };
+                };
+            };
+        };
+    };
+    searchStops: {
+        parameters: {
+            query?: {
+                /** @description Keywords to include in the search. These will be applied to all applicable text fields using a fuzzy matching. */
+                keyword?: string;
+                /** @description The filter to apply. This is used to include/exclude stops form the search. */
+                filter?: string;
+                /** @description The page token. */
+                pageToken?: string;
+                /** @description The max page size. */
+                maxPageSize?: number;
+                /** @description The sort field. */
+                sortField?: string;
+                /** @description The sort direction. */
+                sortOrder?: "asc" | "desc";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        stops: ({
+                            /** @enum {string} */
+                            type: "stop";
+                            stop: components["schemas"]["stopSchema"];
+                        } | {
+                            /** @enum {string} */
+                            type: "unassignedStop";
+                            unassignedStop: components["schemas"]["unassignedStopSchema"];
+                        })[];
+                        nextPageToken: string | null;
+                    };
+                };
+            };
+            /** @description The request was invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        code?: string;
+                        param?: string;
+                        url?: string;
+                    } | {
+                        message: string;
+                        code?: string;
+                        /** @enum {string} */
+                        param: "filter";
+                        url?: string;
+                    } | {
+                        message: string;
+                        code?: string;
+                        /** @enum {string} */
+                        param: "sortField";
+                        url?: string;
+                    } | {
+                        message: string;
+                        code?: string;
+                        /** @enum {string} */
+                        param: "pageToken";
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Default Response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        url?: string;
                     };
                 };
             };
