@@ -4,7 +4,7 @@ import type { components, paths } from "./types.d.ts";
 
 export * from "./types.d.ts";
 
-const BASE_URL = "https://api.getcircuit.com/public/v1";
+const BASE_URL = "https://api.spoke.com/public/v1";
 
 /**
  * Create a Spoke REST API client.
