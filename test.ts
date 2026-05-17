@@ -11,7 +11,7 @@ Deno.test("createSpokeClient()", async () => {
   using _fetchStub = stub(globalThis, "fetch", (input) => {
     const request = input as Request;
     assertEquals(request.headers.get("Authorization"), `Bearer ${apiKey}`);
-    assertEquals(request.url, "https://api.getcircuit.com/public/v1/plans");
+    assertEquals(request.url, "https://api.spoke.com/public/v1/plans");
     return Promise.resolve(new Response("{}"));
   });
 
