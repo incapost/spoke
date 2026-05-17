@@ -4,13 +4,12 @@ import type { components, paths } from "./types.d.ts";
 
 export * from "./types.d.ts";
 
-const BASE_URL = "https://api.getcircuit.com/public/v0.2b";
+const BASE_URL = "https://api.spoke.com/public/v1";
 
 /**
  * Create a Spoke REST API client.
  *
- * Supports version 0.2b of the Spoke API, which is the latest version as of May
- * 2023.
+ * Supports v1 of the Spoke API, which is the latest version as of May 2026.
  *
  * @see {@link https://developer.dispatch.spoke.com | Spoke API Documentation}
  * for endpoints and usage details.
@@ -43,7 +42,7 @@ export function createSpokeClient(
 }
 
 // Until Spoke publishes this definition
-type WebhookRequestBodyBase = { version: "v0.2b"; created: number };
+type WebhookRequestBodyBase = { version: "v1"; created: number };
 
 export type WebhookRequestBody =
   & WebhookRequestBodyBase
@@ -54,6 +53,7 @@ export type WebhookRequestBody =
         | "stop.out_for_delivery"
         | "stop.attempted_delivery"
         | "stop.departed"
+        | "stop.next_in_route"
         | "stop.tracking_link_added";
       data: components["schemas"]["stopSchema"];
     }
