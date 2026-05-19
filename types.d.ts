@@ -157,8 +157,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List stops */
-        get: operations["listStops"];
+        /** List plan stops */
+        get: operations["listPlanStops"];
         put?: never;
         /**
          * Create a new stop
@@ -480,7 +480,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List stops */
+        /** List route stops */
         get: operations["listRouteStops"];
         put?: never;
         post?: never;
@@ -727,18 +727,57 @@ export interface paths {
         /**
          * Stop Search
          * @description See the [Stops Search docs](/api/v1#section/Using-the-API/Stop-Search-API) for more information on formatting the filter string.
-         *             The following fields are supported for filters:
-         *       - `address` - The full address (string)
-         *       - `address.lineOne` - Address line one (string)
-         *       - `address.lineTwo` - Address line two (string)
-         *       - `address.latitude` - Latitude of the address (number)
-         *       - `address.longitude` - Longitude of the address (number)
-         *       - `address.placeId` - Google PlaceID of the address (string)
-         *       - `address.countryCode` - Country code of the address (string)
-         *       - `activity` - Activity type `delivery` or `pickup` (enum)
-         *       - `createdAt` - Stop creation timestamp (ISO 8601 string)
-         *       - `arrivalTime` - Expected driver arrival time where applicable (ISO 8601 string)
-         *       - `custom_properties.[property ID]` - A custom property. Requires a custom property ID (string)
+         *       The following fields are filterable:
+         *       - `planId` - The ID of the plan stop is linked to in PlanId format (e.g. `plans/{planId}`)
+         *       - `routeId` - The ID of the route stop is linked to in RouteId format (e.g. `routes/{routeId}`)
+         *       - `type` - The type of the stop (e.g. `start`, `stop`, `end`)
+         *       - `activity` - The activity performed at the stop (`delivery` or `pickup`)
+         *       - `notes` - Notes associated with the stop
+         *       - `orderInfo.sellerOrderId` - The order ID from the seller
+         *       - `orderInfo.sellerWebsite` - The website URL of the seller
+         *       - `address.address` - The full address of the stop
+         *       - `address.addressLineOne` - The first line of the stop address
+         *       - `address.addressLineTwo` - The second line of the stop address
+         *       - `address.latitude` - The latitude of the stop address in decimal degrees
+         *       - `address.longitude` - The longitude of the stop address in decimal degrees
+         *       - `address.placeId` - The Google Places identifier for the address
+         *       - `address.countryCode` - The ISO country code for the address
+         *       - `createdAt` - The timestamp when the stop was created (ISO 8601)
+         *       - `arrivalAt` - The timestamp of the (estimated) arrival at the stop (ISO 8601)
+         *       - `packageCount` - The number of packages to be delivered or picked up
+         *       - `estimatedTravelDuration` - The estimated travel time to this stop from the previous one, in seconds
+         *       - `estimatedTravelDistance` - The estimated travel distance to this stop from the previous one, in meters
+         *       - `timing.estimatedAttemptDuration` - The estimated time spent at the stop to perform the activity, in seconds
+         *       - `recipient.name` - The name of the recipient at the stop
+         *       - `recipient.email` - The email address of the recipient
+         *       - `recipient.phone` - The phone number of the recipient
+         *       - `recipient.externalId` - An external identifier for the recipient
+         *       - `deliveryInfo.state` - The current state of the delivery (e.g. `delivered_to_recipient`, `failed_not_home`)
+         *       - `deliveryInfo.attempted` - Whether a delivery attempt has been made
+         *       - `deliveryInfo.succeeded` - Whether the delivery was successful
+         *       - `deliveryInfo.recipientProvidedNotes` - Notes provided by the recipient for the driver
+         *       - `deliveryInfo.driverProvidedInternalNotes` - Internal notes provided by the driver
+         *       - `deliveryInfo.driverProvidedRecipientNotes` - Notes for the recipient provided by the driver
+         *       - `deliveryInfo.signeeName` - The name of the person who signed for the delivery
+         *       - `deliveryInfo.attemptedAt` - The timestamp when the delivery was attempted (ISO 8601)
+         *       - `orderInfo.products` - The list of products included in the order
+         *       - `orderInfo.sellerName` - The name of the seller
+         *       - `paymentOnDelivery.amount` - The amount to be collected on delivery, in original units
+         *       - `barcodes` - The list of barcodes associated with the stop
+         *       - `packageLabel` - The label applied to the package(s)
+         *       - `customProperties.*` - A custom property of the stop. Replace `*` with the custom property ID.
+         *
+         *       The following fields are sortable:
+         *       - `address.latitude`
+         *       - `address.longitude`
+         *       - `createdAt`
+         *       - `arrivalAt`
+         *       - `packageCount`
+         *       - `estimatedTravelDuration`
+         *       - `estimatedTravelDistance`
+         *       - `timing.estimatedAttemptDuration`
+         *       - `deliveryInfo.attemptedAt`
+         *       - `paymentOnDelivery.amount`
          */
         get: operations["searchStops"];
         put?: never;
@@ -2619,7 +2658,7 @@ export interface operations {
             };
         };
     };
-    listStops: {
+    listPlanStops: {
         parameters: {
             query?: {
                 /** @description The page token, if any. */
