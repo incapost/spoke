@@ -54,19 +54,13 @@ export type WebhookRequestBody =
         | "stop.attempted_delivery"
         | "stop.departed"
         | "stop.next_in_route"
-        | "stop.tracking_link_added";
+        | "stop.tracking_link_added"
+        | "test.send_event";
       data: components["schemas"]["stopSchema"];
     }
     | {
       type: "unassigned_stop.tracking_link_added";
       data: components["schemas"]["unassignedStopSchema"];
-    }
-    | {
-      type: "test.send_event";
-      data: {
-        email: string;
-        webhookUrl: string;
-      };
     }
   );
 

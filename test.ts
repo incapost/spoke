@@ -38,7 +38,7 @@ Deno.test("getWebhookRequestBodyOrThrow()", async (t) => {
     type: "test.send_event",
     version: "v1",
     created: 1000000000,
-    data: { email: "test@example.com", webhookUrl: "https://example.com/hook" },
+    data: { hello: "world" } as never,
   };
   const encodedPayload = new TextEncoder().encode(JSON.stringify(payload));
 
