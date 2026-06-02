@@ -4,7 +4,7 @@
   "exports": "./mod.ts",
   "license": "MIT",
   "tasks": {
-    "build": "deno x openapi-typescript ./openapi-v1.json -o ./types.d.ts",
+    "build": "deno x openapi-typescript https://developer.dispatch.spoke.com/openapi-v1.json -o ./types.d.ts",
     "ok": "deno fmt --check && deno lint && deno test --doc"
   },
   "imports": {

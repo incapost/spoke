@@ -214,7 +214,7 @@ export interface paths {
         head?: never;
         /**
          * Update an existing stop
-         * @description Does not support updating a stop's location, nor the `circuitClientId`. To do so, delete the stop and create a new one. If the plan is not writable, the request will fail, prefer using the [Update Live Stops API](#tag/Live-Stops/operation/updateLiveStop) instead.
+         * @description Does not support updating a stop's location, nor the `clientId`. To do so, delete the stop and create a new one. If the plan is not writable, the request will fail, prefer using the [Update Live Stops API](#tag/Live-Stops/operation/updateLiveStop) instead.
          */
         patch: operations["updateStop"];
         trace?: never;
@@ -250,7 +250,7 @@ export interface paths {
         put?: never;
         /**
          * Update an existing stop
-         * @description Update a stop on live plans. When the plan is not writable, this endpoint starts an editing session and the action can be applied through a new optimization, or be discarded. It does not support updating a stop's location. To do so, delete the stop and create a new one.
+         * @description Update a stop on live plans. When the plan is not writable, this endpoint starts an editing session and the action can be applied through a new optimization, or be discarded. It does not support updating a stop's location, nor the `clientId`. To do so, delete the stop and create a new one.
          */
         post: operations["updateLiveStop"];
         delete?: never;
@@ -567,7 +567,7 @@ export interface paths {
         head?: never;
         /**
          * Update an existing unassigned stop
-         * @description Does not support updating a unassigned stop's location, nor the `circuitClientId`. To do so, delete the unassignedStop and create a new one.
+         * @description Does not support updating a unassigned stop's location, nor the `clientId`. To do so, delete the unassignedStop and create a new one.
          */
         patch: operations["updateUnassignedStop"];
         trace?: never;
@@ -613,7 +613,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/team/customStopProperties/": {
+    "/team/customStopProperties": {
         parameters: {
             query?: never;
             header?: never;
@@ -792,241 +792,433 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @description The definition of a custom stop property. */
         customStopPropertySchema: {
+            /** @description The custom stop property id */
             id: string;
+            /** @description The name of the custom stop property */
             name: string;
+            /** @description Whether this custom stop property is visible to drivers. */
             visibleToDrivers: boolean;
+            /** @description Whether this property is visible to recipients. */
             visibleToRecipients: boolean;
         };
+        /** @description A date. */
         dateSchema: {
+            /** @description The day of the date. */
             day: number;
+            /** @description The month of the date. */
             month: number;
+            /** @description The year of the date. */
             year: number;
         };
         depotIdSchema: string;
+        /** @description A depot. */
         depotSchema: {
+            /** @description The depot id, in the format `depots/<id>` */
             id: components["schemas"]["depotIdSchema"];
+            /** @description The name of the depot. */
             name: string;
             routeOverrides: {
+                /** @description Default route start time. */
                 startTime: {
+                    /** @description Hour of the day */
                     hour: number;
+                    /** @description Minute of the hour */
                     minute: number;
                 };
+                /** @description The default start address for routes originating from this depot. */
                 startAddress: {
+                    /** @description The full address. */
                     address: string | null;
+                    /** @description The first line of the address. */
                     addressLineOne: string | null;
+                    /** @description The second line of the address. */
                     addressLineTwo: string | null;
+                    /** @description Latitude coordinate of the depot in decimal degrees. */
                     latitude: number | null;
+                    /** @description Longitude coordinate of the depot in decimal degrees. */
                     longitude: number | null;
+                    /** @description A Google PlaceID identifying the location of the depot. */
                     placeId: string | null;
+                    /** @description The country code of the address. */
                     countryCode: string | null;
                 };
+                /** @description Estimated time at stop in seconds. */
                 defaultTimeAtStop?: number | null;
                 endAddress?: {
+                    /** @description The full address. */
                     address: string | null;
+                    /** @description The first line of the address. */
                     addressLineOne: string | null;
+                    /** @description The second line of the address. */
                     addressLineTwo: string | null;
+                    /** @description Latitude coordinate of the depot in decimal degrees. */
                     latitude: number | null;
+                    /** @description Longitude coordinate of the depot in decimal degrees. */
                     longitude: number | null;
+                    /** @description A Google PlaceID identifying the location of the depot. */
                     placeId: string | null;
+                    /** @description The country code of the address. */
                     countryCode: string | null;
                 } | null;
                 endTime?: {
+                    /** @description Hour of the day */
                     hour: number;
+                    /** @description Minute of the hour */
                     minute: number;
                 } | null;
+                /** @description Max stops assigned to each driver */
                 maxStops?: number | null;
+                /** @description The side of the road drivers should stop at. */
                 roadSide?: ("any" | "left_only" | "right_only") | null;
+                /** @description Default vehicle type for new routes from this depot. */
                 vehicleType?: ("bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike") | null;
+                /** @description Return to start address at end of route */
                 roundTrip?: boolean | null;
             } | null;
         };
         driverIdSchema: string;
+        /** @description A driver. */
         driverSchema: {
+            /** @description The driver id, in the format `drivers/<id>` */
             id: components["schemas"]["driverIdSchema"];
+            /** @description The name of the driver. */
             name: string | null;
+            /** @description The email of the driver. */
             email: string | null;
+            /** @description The phone number of the driver. */
             phone: string | null;
+            /** @description The display name of the driver. */
             displayName: string | null;
+            /** @description Whether the driver membership is active or paused. Paused drivers will not be assigned to any routes. */
             active: boolean;
+            /** @description Depots associated with the driver. */
             depots: components["schemas"]["depotIdSchema"][];
+            /** @description Settings to override default route settings. */
             routeOverrides: {
+                /** @description Driver's start time. */
                 startTime: components["schemas"]["timeOfDaySchema"] | null;
+                /** @description Driver's end time. */
                 endTime: components["schemas"]["timeOfDaySchema"] | null;
+                /** @description Driver's start location. */
                 startAddress: {
+                    /** @description The address of the stop. */
                     address: string;
+                    /** @description The first line of the address. */
                     addressLineOne: string;
+                    /** @description The second line of the address. */
                     addressLineTwo: string;
+                    /** @description The latitude of the address in decimal degrees. */
                     latitude: number | null;
+                    /** @description The longitude of the address in decimal degrees. */
                     longitude: number | null;
+                    /** @description The identifier of the place corresponding to this stop on Google Places */
                     placeId: string | null;
+                    /** @description Array of strings that is provided by the Google AutoCompleteAPI */
                     placeTypes: string[];
                 } | null;
+                /** @description Driver's end location. */
                 endAddress: {
+                    /** @description The address of the stop. */
                     address: string;
+                    /** @description The first line of the address. */
                     addressLineOne: string;
+                    /** @description The second line of the address. */
                     addressLineTwo: string;
+                    /** @description The latitude of the address in decimal degrees. */
                     latitude: number | null;
+                    /** @description The longitude of the address in decimal degrees. */
                     longitude: number | null;
+                    /** @description The identifier of the place corresponding to this stop on Google Places */
                     placeId: string | null;
+                    /** @description Array of strings that is provided by the Google AutoCompleteAPI */
                     placeTypes: string[];
                 } | null;
+                /** @description Maximum number of Stops the Driver can take in a route. */
                 maxStops: number | null;
-                /** @enum {string} */
+                /**
+                 * @description The relative driving speed of the driver compared to others.
+                 * @enum {string}
+                 */
                 drivingSpeed: "slower" | "average" | "faster";
-                /** @enum {string} */
+                /**
+                 * @description The relative delivery speed of the driver compared to others.
+                 * @enum {string}
+                 */
                 deliverySpeed: "slower" | "average" | "faster";
+                /** @description The vehicle type the driver will be using for deliveries. */
                 vehicleType: ("bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike") | null;
             };
         };
         memberIdSchema: string;
+        /** @description A dashboard member. */
         memberSchema: {
+            /** @description The member id, in the format `members/<id>` */
             id: components["schemas"]["memberIdSchema"];
+            /** @description The name of the member. */
             name: string | null;
+            /** @description The email of the member. */
             email: string | null;
+            /** @description The phone number of the member. */
             phone: string | null;
+            /** @description The driver linked to the member (where applicable). */
             linkedDriverId: components["schemas"]["driverIdSchema"] | null;
+            /** @description The display name of the member. */
             displayName: string | null;
+            /** @description Whether the member membership is active or paused. */
             active: boolean;
+            /** @description Depots associated with the member. */
             depots: string[];
             roles: components["schemas"]["roleSchema"];
         };
         operationIdSchema: string;
         operationSchema: {
+            /** @description The id of the operation, in the format `operations/<id>`. */
             id: components["schemas"]["operationIdSchema"];
             /** @enum {string} */
             type: "plan_optimization";
+            /** @description Whether the operation is done. */
             done: boolean;
+            /** @description Metadata related to a plan optimization operation. */
             metadata: {
+                /** @description Whether the operation was canceled. */
                 canceled: boolean;
+                /** @description The time the operation started at, in seconds since epoch. */
                 startedAt: number;
+                /** @description The time the operation finished at, in seconds since epoch. */
                 finishedAt: number | null;
+                /** @description The entity that started the operation. */
                 startedBy: "dispatcher" | "api" | string;
+                /** @description The id of the plan, in the format `plans/<id>`. */
                 targetPlanId: components["schemas"]["planIdSchema"];
             };
+            /** @description The result of the plan optimization operation, or an error. */
             result: ({
+                /** @description The number of stops that were considered for optimization. */
                 numOptimizedStops: number;
+                /** @description The stops that were skipped, if any. */
                 skippedStops: {
+                    /** @description The id of the stop, in the format `plans/<id>/stops/<id>`. */
                     id: components["schemas"]["stopIdSchema"];
+                    /** @description The reason the stop was skipped. */
                     reason: "impossible_time_window" | "impossible_navigation" | "impossible_number_of_stops" | "impossible_order_of_stops" | string;
                 }[];
             } | {
+                /** @description A code that identifies the error */
                 code: string;
+                /** @description A human-readable message that describes the error. This message is not intended to be parsed by machines. */
                 message: string;
             }) | null;
         };
         planIdSchema: string;
+        /** @description A plan. */
         planSchema: {
+            /** @description The unique identifier of the plan. */
             id: components["schemas"]["planIdSchema"];
+            /** @description The title of the plan. */
             title: string;
             starts: components["schemas"]["dateSchema"];
+            /** @description The depot ID of the plan, in the format depots/<id> */
             depot: components["schemas"]["depotIdSchema"] | null;
+            /** @description Whether the plan has been distributed. */
             distributed: boolean;
+            /** @description Whether the plan is writable using the normal Plan APIs. If this is false, you will need to use the [Live Plan APIs](/api/v1#tag/Live-Plans) to edit the plan. Any plan created before 2023-04-01 is not writable. */
             writable: boolean;
+            /** @description The optimization state of the plan. */
             optimization: ("creating" | "editing" | "preview" | "optimized" | "optimizing") | null;
+            /** @description The driver IDs of the plan, in the format drivers/<id>. */
             drivers: components["schemas"]["driverIdSchema"][];
+            /** @description The route IDs of the plan, in the format routes/<id>. */
             routes: components["schemas"]["routeIdSchema"][];
+            /** @description Settings for this plan to override default route configurations. */
             routeOverrides: {
+                /** @description Plan's start time. */
                 startTime: {
+                    /** @description Hour of the day */
                     hour: number;
+                    /** @description Minute of the hour */
                     minute: number;
                 } | null;
+                /** @description Plan's end time. */
                 endTime: {
+                    /** @description Hour of the day */
                     hour: number;
+                    /** @description Minute of the hour */
                     minute: number;
                 } | null;
+                /** @description Plan's start location. */
                 startAddress: {
+                    /** @description The address of the stop. */
                     address: string;
+                    /** @description The first line of the address. */
                     addressLineOne: string;
+                    /** @description The second line of the address. */
                     addressLineTwo: string;
+                    /** @description The latitude of the address in decimal degrees. */
                     latitude: number | null;
+                    /** @description The longitude of the address in decimal degrees. */
                     longitude: number | null;
+                    /** @description The identifier of the place corresponding to this stop on Google Places */
                     placeId: string | null;
+                    /** @description Array of strings that is provided by the Google AutoCompleteAPI */
                     placeTypes: string[];
                 } | null;
+                /** @description Plan's end location. */
                 endAddress: {
+                    /** @description The address of the stop. */
                     address: string;
+                    /** @description The first line of the address. */
                     addressLineOne: string;
+                    /** @description The second line of the address. */
                     addressLineTwo: string;
+                    /** @description The latitude of the address in decimal degrees. */
                     latitude: number | null;
+                    /** @description The longitude of the address in decimal degrees. */
                     longitude: number | null;
+                    /** @description The identifier of the place corresponding to this stop on Google Places */
                     placeId: string | null;
+                    /** @description Array of strings that is provided by the Google AutoCompleteAPI */
                     placeTypes: string[];
                 } | null;
+                /** @description Maximum number of Stops per route. */
                 maxStops: number | null;
+                /** @description The relative driving speed compared to others. */
                 drivingSpeed: ("slower" | "average" | "faster") | null;
+                /** @description The relative delivery speed compared to others. */
                 deliverySpeed: ("slower" | "average" | "faster") | null;
+                /** @description The vehicle type used for deliveries. */
                 vehicleType: ("bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike") | null;
+                /** @description Optimization settings for the plan. */
                 optimizationSettings: {
-                    /** @enum {string} */
+                    /**
+                     * @description The primary optimization objective.
+                     * @enum {string}
+                     */
                     objective: "minimize_drivers" | "distribute_services";
                     subObjective?: ("equalize_workload" | "equalize_time" | "maximize_efficiency") | null;
                 };
             } | null;
         };
+        /** @description The role(s) given to the member. */
         roleSchema: ("owner" | "admin" | "depot-manager" | "dispatcher" | "read-only" | "driver")[];
         routeIdSchema: string;
+        /** @description A route. */
         routeSchema: {
+            /** @description The id of the route, in the format `routes/<id>`. */
             id: components["schemas"]["routeIdSchema"];
+            /** @description The title of the route. */
             title: string;
+            /** @description The number of stops in the route. */
             stopCount: number;
+            /** @description The id of the driver. */
             driver: components["schemas"]["driverIdSchema"] | null;
+            /** @description The state of the route. */
             state: {
+                /** @description Whether the route is completed. */
                 completed: boolean;
+                /** @description The timestamp the route was completed at. */
                 completedAt: number | null;
+                /** @description Whether the route is distributed. */
                 distributed: boolean;
+                /** @description The timestamp the route was distributed at. */
                 distributedAt: number | null;
+                /** @description Whether the recipients were notified. */
                 notifiedRecipients: boolean;
+                /** @description The timestamp the recipients were notified at. */
                 notifiedRecipientsAt: number | null;
+                /** @description Whether the route is started. */
                 started: boolean;
+                /** @description The timestamp the route was started at. */
                 startedAt: number | null;
             } | null;
+            /** @description The id of the related plan. */
             plan: components["schemas"]["planIdSchema"] | null;
         };
         stopIdSchema: string;
+        /** @description A stop of a plan, can be related to a route. */
         stopSchema: {
+            /** @description The id of the stop, in the format `plans/<id>/stops/<id>`. */
             id: components["schemas"]["stopIdSchema"];
+            /** @description The address of the stop. */
             address: {
+                /** @description The address of the stop. */
                 address: string;
+                /** @description The first line of the address. */
                 addressLineOne: string;
+                /** @description The second line of the address. */
                 addressLineTwo: string;
+                /** @description The latitude of the address in decimal degrees. */
                 latitude: number | null;
+                /** @description The longitude of the address in decimal degrees. */
                 longitude: number | null;
+                /** @description The identifier of the place corresponding to this stop on Google Places */
                 placeId: string | null;
+                /** @description Array of strings that is provided by the Google AutoCompleteAPI */
                 placeTypes: string[];
             };
+            /** @description List of Barcode IDs associated with the stop. */
             barcodes: string[];
+            /** @description The driver IDs that can be assigned to this stop */
             allowedDrivers: string[];
+            /** @description Estimated time that the driver will take to arrive at this stop from the previous stop in seconds. */
             estimatedTravelDuration: number | null;
+            /** @description The distance in meters between the previous stop and this stop. */
             estimatedTravelDistance: number | null;
+            /** @description Notes for the stop. */
             notes: string | null;
+            /** @description The number of packages. */
             packageCount: number | null;
             weight: {
+                /** @description The weight amount for this stop. */
                 amount: number;
-                /** @enum {string} */
+                /**
+                 * @description The weight unit in which the amount is specified (defined at team's capacity unit).
+                 * @enum {string}
+                 */
                 unit: "kilogram" | "pound" | "metric-ton";
             } | null;
-            /** @enum {string} */
+            /**
+             * @description The type of the stop. `start` is the first stop of the route, `stop` is a stop in the middle of the route, and `end` is the last stop of the route.
+             * @enum {string}
+             */
             type: "start" | "stop" | "end";
+            /** @description The label of the package. */
             packageLabel: string | null;
+            /** @description The position of the stop in the route. */
             stopPosition: number | null;
+            /** @description The recipient tracking link. */
             trackingLink: string | null;
+            /** @description The web app link. */
             webAppLink: string;
+            /** @description The order information of the stop. */
             orderInfo: {
+                /** @description The products of the stop. */
                 products: string[];
+                /** @description Name of the seller where the order is from. */
                 sellerName: string | null;
+                /** @description Id of the seller where the order is from. */
                 sellerOrderId: string | null;
+                /** @description Website of the seller where the order is from. */
                 sellerWebsite: string | null;
             };
             placeInVehicle: {
+                /** @description The x position of the package. */
                 x: ("left" | "right") | null;
+                /** @description The y position of the package. */
                 y: ("front" | "back" | "middle") | null;
+                /** @description The z position of the package. */
                 z: ("floor" | "shelf") | null;
             } | null;
+            /** @description The recipient of the stop. */
             recipient: {
+                /** @description The name of the recipient. */
                 name: string | null;
+                /** @description The email of the recipient. */
                 email: string | null;
+                /** @description The phone of the recipient. */
                 phone: string | null;
+                /** @description The external id of the recipient. */
                 externalId: string | null;
             };
             /**
@@ -1035,15 +1227,20 @@ export interface components {
              */
             activity: "delivery" | "pickup";
             deliveryInfo: {
+                /** @description Whether the stop was attempted. */
                 attempted: boolean;
+                /** @description When the stop was attempted in seconds since epoch. */
                 attemptedAt: number | null;
-                arrivedAt: number | null;
                 timeAtStopInfo: {
                     /** @enum {string} */
                     status: "available";
+                    /** @description Grouped time-at-stop data. */
                     value: {
+                        /** @description When the driver arrived at the stop in seconds since epoch. */
                         arrivedAt: number | null;
+                        /** @description When the driver departed from the stop in seconds since epoch. */
                         departedAt: number | null;
+                        /** @description Whether the time at stop was estimated rather than directly measured. */
                         isEstimated: boolean | null;
                     };
                 } | {
@@ -1059,35 +1256,58 @@ export interface components {
                     /** @enum {string} */
                     pendingReason?: "not_yet_arrived";
                 };
+                /** @description Where the stop was attempted. */
                 attemptedLocation: {
+                    /** @description The latitude of the location. */
                     latitude: number;
+                    /** @description The longitude of the location. */
                     longitude: number;
                 } | null;
+                /** @description Internal notes provided by the driver. */
                 driverProvidedInternalNotes: string | null;
+                /** @description Recipient notes provided by the driver. */
                 driverProvidedRecipientNotes: string | null;
+                /** @description URLs of proof of delivery photos. */
                 photoUrls: string[];
+                /** @description Notes from recipient */
                 recipientProvidedNotes: string | null;
+                /** @description URL of the signature. */
                 signatureUrl: string | null;
+                /** @description Name of the signee. */
                 signeeName: string | null;
+                /** @description Whether the stop was succeeded. */
                 succeeded: boolean;
-                /** @enum {string} */
+                /**
+                 * @description The state of the delivery.
+                 * @enum {string}
+                 */
                 state: "delivered_to_recipient" | "delivered_to_third_party" | "delivered_to_mailbox" | "delivered_to_safe_place" | "delivered_to_pickup_point" | "delivered_other" | "picked_up_from_customer" | "picked_up_unmanned" | "picked_up_from_locker" | "picked_up_other" | "failed_not_home" | "failed_cant_find_address" | "failed_no_parking" | "failed_no_time" | "failed_package_not_available" | "failed_other" | "failed_missing_required_proof" | "failed_payment_not_received" | "unattempted";
             } | null;
             paymentOnDelivery: {
+                /** @description The amount *in minor units* (e.g. cents) to be collected upon delivery. */
                 amount: number | null;
+                /** @description The payment's currency in ISO 4217 standard. */
                 currency: string;
             } | null;
+            /** @description The proof of attempt requirements of the stop. */
             proofOfAttemptRequirements: {
+                /** @description Whether the proof of attempt is enabled.This only works if the team subscription has access to proof of delivery */
                 enabled: boolean | null;
             };
+            /** @description The id of the plan, in the format `plans/<id>`. */
             plan: components["schemas"]["planIdSchema"];
+            /** @description The route of the stop, if any. */
             route: components["schemas"]["routeSchema"] | null;
             eta: {
                 /** @enum {string} */
                 status: "available";
+                /** @description The estimated time of arrival data of the stop. */
                 value: {
+                    /** @description The estimated time in seconds since epoch. */
                     estimatedArrivalAt: number;
+                    /** @description The latest estimated time in seconds since epoch. */
                     estimatedLatestArrivalAt: number;
+                    /** @description The earliest estimated time in seconds since epoch. */
                     estimatedEarliestArrivalAt: number;
                 };
             } | {
@@ -1103,9 +1323,13 @@ export interface components {
                 /** @enum {string} */
                 pendingReason?: "not_optimized";
             };
+            /** @description The timing data of the stop. */
             timing: {
+                /** @description Time that the driver estimates to spend on the stop to do his job (deliver a parcel, visit a client, etc) in seconds. */
                 estimatedAttemptDuration: number | null;
+                /** @description The earliest time that the driver should arrive at the stop */
                 earliestAttemptTime: components["schemas"]["timeOfDaySchema"] | null;
+                /** @description The latest time that the driver should arrive at the stop. */
                 latestAttemptTime: components["schemas"]["timeOfDaySchema"] | null;
             };
             /**
@@ -1113,47 +1337,81 @@ export interface components {
              * @enum {string}
              */
             optimizationOrder: "first" | "last" | "default";
+            /** @description Custom properties of the stop, can be used to store additional information. */
             customProperties: {
                 [key: string]: string | null;
             } | null;
-            circuitClientId: string | null;
+            /** @description The associated Client ID of the Spoke Connect */
+            clientId: string | null;
         };
+        /** @description Time of day in hours and minutes. Uses a 24 hour clock. */
         timeOfDaySchema: {
+            /** @description Hour of the day */
             hour: number;
+            /** @description Minute of the hour */
             minute: number;
         };
         unassignedStopIdSchema: string;
+        /** @description An unassigned stop. */
         unassignedStopSchema: {
+            /** @description The id of the unassigned stop, in the format `unassignedStops/<id>`. */
             id: components["schemas"]["unassignedStopIdSchema"];
+            /** @description The depot that this unassigned stop belongs to. */
             depot: string;
+            /** @description The address of the stop. */
             address: {
+                /** @description The address of the stop. */
                 address: string;
+                /** @description The first line of the address. */
                 addressLineOne: string;
+                /** @description The second line of the address. */
                 addressLineTwo: string;
+                /** @description The latitude of the address in decimal degrees. */
                 latitude: number | null;
+                /** @description The longitude of the address in decimal degrees. */
                 longitude: number | null;
+                /** @description The identifier of the place corresponding to this stop on Google Places */
                 placeId: string | null;
+                /** @description Array of strings that is provided by the Google AutoCompleteAPI */
                 placeTypes: string[];
             };
+            /** @description List of Barcode IDs associated with the stop. */
             barcodes: string[];
+            /** @description The driver IDs that can be assigned to this stop. */
             allowedDrivers: string[];
+            /** @description Notes for the stop. */
             notes: string | null;
+            /** @description The number of packages. */
             packageCount: number | null;
             weight: {
+                /** @description The weight amount for this stop. */
                 amount: number;
-                /** @enum {string} */
+                /**
+                 * @description The weight unit in which the amount is specified (defined at team's capacity unit).
+                 * @enum {string}
+                 */
                 unit: "kilogram" | "pound" | "metric-ton";
             } | null;
+            /** @description The order information of the stop. */
             orderInfo: {
+                /** @description The products of the stop. */
                 products: string[];
+                /** @description Name of the seller where the order is from. */
                 sellerName: string | null;
+                /** @description Id of the seller where the order is from. */
                 sellerOrderId: string | null;
+                /** @description Website of the seller where the order is from. */
                 sellerWebsite: string | null;
             };
+            /** @description The recipient of the stop. */
             recipient: {
+                /** @description The name of the recipient. */
                 name: string | null;
+                /** @description The email of the recipient. */
                 email: string | null;
+                /** @description The phone of the recipient. */
                 phone: string | null;
+                /** @description The external id of the recipient. */
                 externalId: string | null;
             };
             /**
@@ -1161,10 +1419,15 @@ export interface components {
              * @enum {string}
              */
             activity: "delivery" | "pickup";
+            /** @description The recipient tracking link. */
             trackingLink: string | null;
+            /** @description The timing data of the stop. */
             timing: {
+                /** @description Time that the driver estimates to spend on the stop to do his job (deliver a parcel, visit a client, etc) in seconds. */
                 estimatedAttemptDuration: number | null;
+                /** @description The earliest time that the driver should arrive at the stop */
                 earliestAttemptTime: components["schemas"]["timeOfDaySchema"] | null;
+                /** @description The latest time that the driver should arrive at the stop. */
                 latestAttemptTime: components["schemas"]["timeOfDaySchema"] | null;
             };
             /**
@@ -1173,16 +1436,22 @@ export interface components {
              */
             optimizationOrder: "first" | "last" | "default";
             paymentOnDelivery: {
+                /** @description The amount *in minor units* (e.g. cents) to be collected upon delivery. */
                 amount: number | null;
+                /** @description The payment's currency in ISO 4217 standard. */
                 currency: string;
             } | null;
+            /** @description The proof of attempt requirements of the stop. */
             proofOfAttemptRequirements: {
+                /** @description Whether the proof of attempt is enabled.This only works if the team subscription has access to proof of delivery */
                 enabled: boolean | null;
             };
+            /** @description Custom properties of the stop, can be used to store additional information. */
             customProperties: {
                 [key: string]: string | null;
             } | null;
-            circuitClientId: string | null;
+            /** @description The associated Client ID of the Spoke Connect */
+            clientId: string | null;
         };
     };
     responses: never;
@@ -1216,14 +1485,16 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Default Response */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The plans list. */
                         plans: components["schemas"]["planSchema"][];
+                        /** @description The next page token. */
                         nextPageToken: string | null;
                     };
                 };
@@ -1235,49 +1506,63 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -1372,33 +1657,17 @@ export interface operations {
                         } | null;
                         /** @description The maximum number of stops that can be allocated per route. Note that this setting will be ignored when vehicle capacity or pickups are being used. */
                         maxStops?: number | null;
-                        /**
-                         * @description How fast drivers drive compared to the Team's average
-                         * @enum {string|null}
-                         */
-                        drivingSpeed?: "slower" | "average" | "faster" | null;
-                        /**
-                         * @description How fast drivers deliver compared to the Team's average
-                         * @enum {string|null}
-                         */
-                        deliverySpeed?: "slower" | "average" | "faster" | null;
-                        /**
-                         * @description The type of vehicle used for routes in this plan
-                         * @enum {string|null}
-                         */
-                        vehicleType?: "bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike" | null;
+                        drivingSpeed?: ("slower" | "average" | "faster") | null;
+                        /** @description How fast drivers deliver compared to the Team's average */
+                        deliverySpeed?: ("slower" | "average" | "faster") | null;
+                        /** @description The type of vehicle used for routes in this plan */
+                        vehicleType?: ("bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike") | null;
                         /** @description Optimization settings for the plan. */
                         optimizationSettings?: {
-                            /**
-                             * @description The primary optimization objective.
-                             * @enum {string|null}
-                             */
+                            /** @description The primary optimization objective. */
                             objective?: "distribute_services" | null;
-                            /**
-                             * @description The secondary optimization objective.
-                             * @enum {string|null}
-                             */
-                            subObjective?: "equalize_workload" | "equalize_time" | "maximize_efficiency" | null;
+                            /** @description The secondary optimization objective. */
+                            subObjective?: ("equalize_workload" | "equalize_time" | "maximize_efficiency") | null;
                         } | null;
                     } | null;
                 };
@@ -1414,33 +1683,39 @@ export interface operations {
                     "application/json": components["schemas"]["planSchema"];
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to validate the request */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Plan is no longer accessible due to data access restrictions. Upgrade to a plan that supports a longer delivery history period to access it. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -1470,7 +1745,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Depot not found */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -1484,30 +1759,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -1542,26 +1825,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Plan is no longer accessible due to data access restrictions. Upgrade to a plan that supports a longer delivery history period to access it. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -1577,7 +1866,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided plan id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -1589,30 +1878,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -1645,26 +1942,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Plan is no longer accessible due to data access restrictions. Upgrade to a plan that supports a longer delivery history period to access it. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -1680,7 +1983,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided plan id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -1692,30 +1995,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -1814,33 +2125,17 @@ export interface operations {
                         } | null;
                         /** @description The maximum number of stops that can be allocated per route. Note that this setting will be ignored when vehicle capacity or pickups are being used. */
                         maxStops?: number | null;
-                        /**
-                         * @description How fast drivers drive compared to the Team's average
-                         * @enum {string|null}
-                         */
-                        drivingSpeed?: "slower" | "average" | "faster" | null;
-                        /**
-                         * @description How fast drivers deliver compared to the Team's average
-                         * @enum {string|null}
-                         */
-                        deliverySpeed?: "slower" | "average" | "faster" | null;
-                        /**
-                         * @description The type of vehicle used for routes in this plan
-                         * @enum {string|null}
-                         */
-                        vehicleType?: "bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike" | null;
+                        drivingSpeed?: ("slower" | "average" | "faster") | null;
+                        /** @description How fast drivers deliver compared to the Team's average */
+                        deliverySpeed?: ("slower" | "average" | "faster") | null;
+                        /** @description The type of vehicle used for routes in this plan */
+                        vehicleType?: ("bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike") | null;
                         /** @description Optimization settings for the plan. */
                         optimizationSettings?: {
-                            /**
-                             * @description The primary optimization objective.
-                             * @enum {string|null}
-                             */
+                            /** @description The primary optimization objective. */
                             objective?: "distribute_services" | null;
-                            /**
-                             * @description The secondary optimization objective.
-                             * @enum {string|null}
-                             */
-                            subObjective?: "equalize_workload" | "equalize_time" | "maximize_efficiency" | null;
+                            /** @description The secondary optimization objective. */
+                            subObjective?: ("equalize_workload" | "equalize_time" | "maximize_efficiency") | null;
                         } | null;
                     } | null;
                 };
@@ -1856,33 +2151,39 @@ export interface operations {
                     "application/json": components["schemas"]["planSchema"];
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to validate the request */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Plan is no longer accessible due to data access restrictions. Upgrade to a plan that supports a longer delivery history period to access it. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -1915,7 +2216,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The plan is not writable. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -1929,7 +2230,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Drivers and plans must have the same depot configured */
             412: {
                 headers: {
                     [name: string]: unknown;
@@ -1938,20 +2239,25 @@ export interface operations {
                     "application/json": {
                         /** @enum {string} */
                         message: "Driver does not share depot with plan";
+                        /** @description The parameter that caused the error. */
                         param?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -1986,26 +2292,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Plan is no longer accessible due to data access restrictions. Upgrade to a plan that supports a longer delivery history period to access it. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -2021,7 +2333,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided plan id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -2072,30 +2384,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -2130,26 +2450,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Plan is no longer accessible due to data access restrictions. Upgrade to a plan that supports a longer delivery history period to access it. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -2165,7 +2491,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided plan id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -2206,30 +2532,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -2276,26 +2610,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Plan is no longer accessible due to data access restrictions. Upgrade to a plan that supports a longer delivery history period to access it. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -2311,7 +2651,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided plan id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -2367,30 +2707,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -2425,26 +2773,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Plan is no longer accessible due to data access restrictions. Upgrade to a plan that supports a longer delivery history period to access it. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -2460,7 +2814,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided plan id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -2501,30 +2855,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -2557,26 +2919,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Plan is no longer accessible due to data access restrictions. Upgrade to a plan that supports a longer delivery history period to access it. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -2592,7 +2960,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided plan id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -2628,30 +2996,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -2680,14 +3056,16 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Default Response */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The stops list. */
                         stops: components["schemas"]["stopSchema"][];
+                        /** @description The next page token. */
                         nextPageToken: string | null;
                     };
                 };
@@ -2699,26 +3077,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Plan is no longer accessible due to data access restrictions. Upgrade to a plan that supports a longer delivery history period to access it. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -2734,7 +3118,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided plan id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -2746,30 +3130,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -2810,7 +3202,6 @@ export interface operations {
                         /** @description The longitude of the address in decimal degrees. */
                         longitude?: number | null;
                     };
-                    /** @description Timing information for this stop */
                     timing?: {
                         /** @description Time of day of the earliest time this stop should happen */
                         earliestAttemptTime?: {
@@ -2829,7 +3220,6 @@ export interface operations {
                         /** @description Duration in seconds of the activity in this stop, only set if you want to override the default. This can be set up to 8 hours. */
                         estimatedAttemptDuration?: number | null;
                     } | null;
-                    /** @description Recipient information for this stop */
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
@@ -2840,7 +3230,6 @@ export interface operations {
                         /** @description Name of the recipient */
                         name?: string | null;
                     } | null;
-                    /** @description Order information for this stop */
                     orderInfo?: {
                         /** @description Products in this stop */
                         products?: string[];
@@ -2851,17 +3240,12 @@ export interface operations {
                         /** @description Seller website */
                         sellerWebsite?: string | null;
                     } | null;
-                    /** @description Payment on delivery (also known as "Cash on Delivery") data for this stop */
                     paymentOnDelivery?: {
                         /** @description Amount *in minor units* (e.g. cents) to be collected upon delivery */
                         amount?: number | null;
-                        /**
-                         * @description Currency of the payment. Defaults to the team's currency.
-                         * @enum {string|null}
-                         */
-                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                        /** @description Currency of the payment. Defaults to the team's currency. */
+                        currency?: ("AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR") | null;
                     } | null;
-                    /** @description Proof of attempt requirement settings for this stop */
                     proofOfAttemptRequirements?: {
                         /** @description Whether proof of attempt is required for this stop */
                         enabled?: boolean | null;
@@ -2871,14 +3255,10 @@ export interface operations {
                     /**
                      * @description Activity type
                      * @default delivery
-                     * @enum {string|null}
                      */
-                    activity?: "delivery" | "pickup" | null;
-                    /**
-                     * @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`.
-                     * @enum {string|null}
-                     */
-                    optimizationOrder?: "first" | "last" | "default" | null;
+                    activity?: ("delivery" | "pickup") | null;
+                    /** @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`. */
+                    optimizationOrder?: ("first" | "last" | "default") | null;
                     /** @description Number of packages in the stop */
                     packageCount?: number | null;
                     /** @description Weight information for this stop. */
@@ -2894,7 +3274,7 @@ export interface operations {
                     /** @description Notes for the stop */
                     notes?: string | null;
                     /** @description Client ID of the retailer in Spoke Connect */
-                    circuitClientId?: string | null;
+                    clientId?: string | null;
                     /** @description List of barcode IDs associated with this stop */
                     barcodes?: string[];
                     /** @description Key-value pairs of custom stop properties for this stop. The keys must be unique and match a custom stop property defined in your team. */
@@ -2921,21 +3301,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -2954,12 +3340,14 @@ export interface operations {
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
                     } | {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
                     } | {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "vehicle_capacity_disabled";
@@ -2975,11 +3363,12 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The plan is not writable. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -2993,7 +3382,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to create stop */
             410: {
                 headers: {
                     [name: string]: unknown;
@@ -3005,7 +3394,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Drivers must be part of the plan to be referenced by stops */
             412: {
                 headers: {
                     [name: string]: unknown;
@@ -3014,11 +3403,12 @@ export interface operations {
                     "application/json": {
                         /** @enum {string} */
                         message: "Driver is not linked to plan";
+                        /** @description The parameter that caused the error. */
                         param?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to create stop */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -3029,30 +3419,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -3093,7 +3491,6 @@ export interface operations {
                         /** @description The longitude of the address in decimal degrees. */
                         longitude?: number | null;
                     };
-                    /** @description Timing information for this stop */
                     timing?: {
                         /** @description Time of day of the earliest time this stop should happen */
                         earliestAttemptTime?: {
@@ -3112,7 +3509,6 @@ export interface operations {
                         /** @description Duration in seconds of the activity in this stop, only set if you want to override the default. This can be set up to 8 hours. */
                         estimatedAttemptDuration?: number | null;
                     } | null;
-                    /** @description Recipient information for this stop */
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
@@ -3123,7 +3519,6 @@ export interface operations {
                         /** @description Name of the recipient */
                         name?: string | null;
                     } | null;
-                    /** @description Order information for this stop */
                     orderInfo?: {
                         /** @description Products in this stop */
                         products?: string[];
@@ -3134,17 +3529,12 @@ export interface operations {
                         /** @description Seller website */
                         sellerWebsite?: string | null;
                     } | null;
-                    /** @description Payment on delivery (also known as "Cash on Delivery") data for this stop */
                     paymentOnDelivery?: {
                         /** @description Amount *in minor units* (e.g. cents) to be collected upon delivery */
                         amount?: number | null;
-                        /**
-                         * @description Currency of the payment. Defaults to the team's currency.
-                         * @enum {string|null}
-                         */
-                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                        /** @description Currency of the payment. Defaults to the team's currency. */
+                        currency?: ("AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR") | null;
                     } | null;
-                    /** @description Proof of attempt requirement settings for this stop */
                     proofOfAttemptRequirements?: {
                         /** @description Whether proof of attempt is required for this stop */
                         enabled?: boolean | null;
@@ -3154,14 +3544,10 @@ export interface operations {
                     /**
                      * @description Activity type
                      * @default delivery
-                     * @enum {string|null}
                      */
-                    activity?: "delivery" | "pickup" | null;
-                    /**
-                     * @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`.
-                     * @enum {string|null}
-                     */
-                    optimizationOrder?: "first" | "last" | "default" | null;
+                    activity?: ("delivery" | "pickup") | null;
+                    /** @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`. */
+                    optimizationOrder?: ("first" | "last" | "default") | null;
                     /** @description Number of packages in the stop */
                     packageCount?: number | null;
                     /** @description Weight information for this stop. */
@@ -3177,7 +3563,7 @@ export interface operations {
                     /** @description Notes for the stop */
                     notes?: string | null;
                     /** @description Client ID of the retailer in Spoke Connect */
-                    circuitClientId?: string | null;
+                    clientId?: string | null;
                     /** @description List of barcode IDs associated with this stop */
                     barcodes?: string[];
                     /** @description Key-value pairs of custom stop properties for this stop. The keys must be unique and match a custom stop property defined in your team. */
@@ -3188,34 +3574,53 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Default Response */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The ids of the successfully imported stops */
                         success: string[];
+                        /** @description The failed stops */
                         failed: {
                             error: {
+                                /** @description The error that occurred during import */
                                 message: string;
                             };
+                            /** @description The stop that failed to import */
                             stop: {
+                                /** @description The address of the stop that failed to import */
                                 address: {
+                                    /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                                     addressName: string | null;
+                                    /** @description The first line of the address. */
                                     addressLineOne: string | null;
+                                    /** @description The second line of the address. */
                                     addressLineTwo: string | null;
+                                    /** @description The city of the address. */
                                     city: string | null;
+                                    /** @description The state of the address. */
                                     state: string | null;
+                                    /** @description The zip code of the address. */
                                     zip: string | null;
+                                    /** @description The country of the address. */
                                     country: string | null;
+                                    /** @description The latitude of the address in decimal degrees. */
                                     latitude: number | null;
+                                    /** @description The longitude of the address in decimal degrees. */
                                     longitude: number | null;
                                 };
+                                /** @description The recipient of the stop that failed to import */
                                 recipient: {
+                                    /** @description External ID of the recipient, as defined by the API user */
                                     externalId: string | null;
+                                    /** @description Email of the recipient */
                                     email: string | null;
+                                    /** @description Phone number of the recipient */
                                     phone: string | null;
+                                    /** @description Name of the recipient */
                                     name: string | null;
                                 } | null;
                             };
@@ -3230,21 +3635,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -3263,12 +3674,14 @@ export interface operations {
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
                     } | {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
                     } | {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "vehicle_capacity_disabled";
@@ -3284,11 +3697,12 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The plan is not writable. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -3302,7 +3716,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to create stop */
             410: {
                 headers: {
                     [name: string]: unknown;
@@ -3314,7 +3728,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Drivers must be part of the plan to be referenced by stops */
             412: {
                 headers: {
                     [name: string]: unknown;
@@ -3323,11 +3737,12 @@ export interface operations {
                     "application/json": {
                         /** @enum {string} */
                         message: "Driver is not linked to plan";
+                        /** @description The parameter that caused the error. */
                         param?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to create stop */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -3338,30 +3753,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -3398,26 +3821,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Plan is no longer accessible due to data access restrictions. Upgrade to a plan that supports a longer delivery history period to access it. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -3433,41 +3862,50 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Not Found */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -3502,26 +3940,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Plan is no longer accessible due to data access restrictions. Upgrade to a plan that supports a longer delivery history period to access it. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -3537,18 +3981,19 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Not Found */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The plan is not writable. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -3562,30 +4007,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -3608,7 +4061,6 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
-                    /** @description Recipient information for this stop */
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
@@ -3619,7 +4071,6 @@ export interface operations {
                         /** @description Name of the recipient */
                         name?: string | null;
                     } | null;
-                    /** @description Order information for this stop */
                     orderInfo?: {
                         /** @description Products in this stop */
                         products?: string[];
@@ -3630,17 +4081,12 @@ export interface operations {
                         /** @description Seller website */
                         sellerWebsite?: string | null;
                     } | null;
-                    /** @description Payment on delivery (also known as "Cash on Delivery") data for this stop */
                     paymentOnDelivery?: {
                         /** @description Amount *in minor units* (e.g. cents) to be collected upon delivery */
                         amount?: number | null;
-                        /**
-                         * @description Currency of the payment. Defaults to the team's currency.
-                         * @enum {string|null}
-                         */
-                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                        /** @description Currency of the payment. Defaults to the team's currency. */
+                        currency?: ("AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR") | null;
                     } | null;
-                    /** @description Proof of attempt requirement settings for this stop */
                     proofOfAttemptRequirements?: {
                         /** @description Whether proof of attempt is required for this stop */
                         enabled?: boolean | null;
@@ -3650,14 +4096,10 @@ export interface operations {
                     /**
                      * @description Activity type
                      * @default delivery
-                     * @enum {string|null}
                      */
-                    activity?: "delivery" | "pickup" | null;
-                    /**
-                     * @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`.
-                     * @enum {string|null}
-                     */
-                    optimizationOrder?: "first" | "last" | "default" | null;
+                    activity?: ("delivery" | "pickup") | null;
+                    /** @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`. */
+                    optimizationOrder?: ("first" | "last" | "default") | null;
                     /** @description Number of packages in the stop */
                     packageCount?: number | null;
                     /** @description Weight information for this stop. */
@@ -3716,21 +4158,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -3749,12 +4197,14 @@ export interface operations {
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
                     } | {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
                     } | {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "vehicle_capacity_disabled";
@@ -3763,18 +4213,19 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Not Found */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The plan is not writable. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -3788,7 +4239,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Drivers must be part of the plan to be referenced by stops */
             412: {
                 headers: {
                     [name: string]: unknown;
@@ -3797,11 +4248,12 @@ export interface operations {
                     "application/json": {
                         /** @enum {string} */
                         message: "Driver is not linked to plan";
+                        /** @description The parameter that caused the error. */
                         param?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to create stop */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -3812,30 +4264,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -3876,7 +4336,6 @@ export interface operations {
                         /** @description The longitude of the address in decimal degrees. */
                         longitude?: number | null;
                     };
-                    /** @description Timing information for this stop */
                     timing?: {
                         /** @description Time of day of the earliest time this stop should happen */
                         earliestAttemptTime?: {
@@ -3895,7 +4354,6 @@ export interface operations {
                         /** @description Duration in seconds of the activity in this stop, only set if you want to override the default. This can be set up to 8 hours. */
                         estimatedAttemptDuration?: number | null;
                     } | null;
-                    /** @description Recipient information for this stop */
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
@@ -3906,7 +4364,6 @@ export interface operations {
                         /** @description Name of the recipient */
                         name?: string | null;
                     } | null;
-                    /** @description Order information for this stop */
                     orderInfo?: {
                         /** @description Products in this stop */
                         products?: string[];
@@ -3917,17 +4374,12 @@ export interface operations {
                         /** @description Seller website */
                         sellerWebsite?: string | null;
                     } | null;
-                    /** @description Payment on delivery (also known as "Cash on Delivery") data for this stop */
                     paymentOnDelivery?: {
                         /** @description Amount *in minor units* (e.g. cents) to be collected upon delivery */
                         amount?: number | null;
-                        /**
-                         * @description Currency of the payment. Defaults to the team's currency.
-                         * @enum {string|null}
-                         */
-                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                        /** @description Currency of the payment. Defaults to the team's currency. */
+                        currency?: ("AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR") | null;
                     } | null;
-                    /** @description Proof of attempt requirement settings for this stop */
                     proofOfAttemptRequirements?: {
                         /** @description Whether proof of attempt is required for this stop */
                         enabled?: boolean | null;
@@ -3937,14 +4389,10 @@ export interface operations {
                     /**
                      * @description Activity type
                      * @default delivery
-                     * @enum {string|null}
                      */
-                    activity?: "delivery" | "pickup" | null;
-                    /**
-                     * @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`.
-                     * @enum {string|null}
-                     */
-                    optimizationOrder?: "first" | "last" | "default" | null;
+                    activity?: ("delivery" | "pickup") | null;
+                    /** @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`. */
+                    optimizationOrder?: ("first" | "last" | "default") | null;
                     /** @description Number of packages in the stop */
                     packageCount?: number | null;
                     /** @description Weight information for this stop. */
@@ -3960,7 +4408,7 @@ export interface operations {
                     /** @description Notes for the stop */
                     notes?: string | null;
                     /** @description Client ID of the retailer in Spoke Connect */
-                    circuitClientId?: string | null;
+                    clientId?: string | null;
                     /** @description List of barcode IDs associated with this stop */
                     barcodes?: string[];
                     /** @description Key-value pairs of custom stop properties for this stop. The keys must be unique and match a custom stop property defined in your team. */
@@ -3971,7 +4419,7 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Default Response */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -3990,21 +4438,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -4023,12 +4477,14 @@ export interface operations {
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
                     } | {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
                     } | {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "vehicle_capacity_disabled";
@@ -4044,11 +4500,12 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The plan's optimization is in progress. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -4062,7 +4519,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to create stop */
             410: {
                 headers: {
                     [name: string]: unknown;
@@ -4074,7 +4531,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to create stop */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -4085,30 +4542,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -4131,7 +4596,6 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
-                    /** @description Recipient information for this stop */
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
@@ -4142,7 +4606,6 @@ export interface operations {
                         /** @description Name of the recipient */
                         name?: string | null;
                     } | null;
-                    /** @description Order information for this stop */
                     orderInfo?: {
                         /** @description Products in this stop */
                         products?: string[];
@@ -4153,17 +4616,12 @@ export interface operations {
                         /** @description Seller website */
                         sellerWebsite?: string | null;
                     } | null;
-                    /** @description Payment on delivery (also known as "Cash on Delivery") data for this stop */
                     paymentOnDelivery?: {
                         /** @description Amount *in minor units* (e.g. cents) to be collected upon delivery */
                         amount?: number | null;
-                        /**
-                         * @description Currency of the payment. Defaults to the team's currency.
-                         * @enum {string|null}
-                         */
-                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                        /** @description Currency of the payment. Defaults to the team's currency. */
+                        currency?: ("AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR") | null;
                     } | null;
-                    /** @description Proof of attempt requirement settings for this stop */
                     proofOfAttemptRequirements?: {
                         /** @description Whether proof of attempt is required for this stop */
                         enabled?: boolean | null;
@@ -4173,14 +4631,10 @@ export interface operations {
                     /**
                      * @description Activity type
                      * @default delivery
-                     * @enum {string|null}
                      */
-                    activity?: "delivery" | "pickup" | null;
-                    /**
-                     * @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`.
-                     * @enum {string|null}
-                     */
-                    optimizationOrder?: "first" | "last" | "default" | null;
+                    activity?: ("delivery" | "pickup") | null;
+                    /** @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`. */
+                    optimizationOrder?: ("first" | "last" | "default") | null;
                     /** @description Number of packages in the stop */
                     packageCount?: number | null;
                     /** @description Weight information for this stop. */
@@ -4223,7 +4677,7 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Default Response */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -4242,21 +4696,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -4275,12 +4735,14 @@ export interface operations {
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
                     } | {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
                     } | {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "vehicle_capacity_disabled";
@@ -4289,18 +4751,19 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Not Found */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The plan's optimization is in progress. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -4314,7 +4777,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Drivers must be part of the plan to be referenced by stops */
             412: {
                 headers: {
                     [name: string]: unknown;
@@ -4323,6 +4786,7 @@ export interface operations {
                     "application/json": {
                         /** @enum {string} */
                         message: "Driver is not linked to plan";
+                        /** @description The parameter that caused the error. */
                         param?: string;
                     };
                 };
@@ -4342,30 +4806,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -4406,7 +4878,6 @@ export interface operations {
                         /** @description The longitude of the address in decimal degrees. */
                         longitude?: number | null;
                     };
-                    /** @description Timing information for this stop */
                     timing?: {
                         /** @description Time of day of the earliest time this stop should happen */
                         earliestAttemptTime?: {
@@ -4425,7 +4896,6 @@ export interface operations {
                         /** @description Duration in seconds of the activity in this stop, only set if you want to override the default. This can be set up to 8 hours. */
                         estimatedAttemptDuration?: number | null;
                     } | null;
-                    /** @description Recipient information for this stop */
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
@@ -4436,7 +4906,6 @@ export interface operations {
                         /** @description Name of the recipient */
                         name?: string | null;
                     } | null;
-                    /** @description Order information for this stop */
                     orderInfo?: {
                         /** @description Products in this stop */
                         products?: string[];
@@ -4447,17 +4916,12 @@ export interface operations {
                         /** @description Seller website */
                         sellerWebsite?: string | null;
                     } | null;
-                    /** @description Payment on delivery (also known as "Cash on Delivery") data for this stop */
                     paymentOnDelivery?: {
                         /** @description Amount *in minor units* (e.g. cents) to be collected upon delivery */
                         amount?: number | null;
-                        /**
-                         * @description Currency of the payment. Defaults to the team's currency.
-                         * @enum {string|null}
-                         */
-                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                        /** @description Currency of the payment. Defaults to the team's currency. */
+                        currency?: ("AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR") | null;
                     } | null;
-                    /** @description Proof of attempt requirement settings for this stop */
                     proofOfAttemptRequirements?: {
                         /** @description Whether proof of attempt is required for this stop */
                         enabled?: boolean | null;
@@ -4467,14 +4931,10 @@ export interface operations {
                     /**
                      * @description Activity type
                      * @default delivery
-                     * @enum {string|null}
                      */
-                    activity?: "delivery" | "pickup" | null;
-                    /**
-                     * @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`.
-                     * @enum {string|null}
-                     */
-                    optimizationOrder?: "first" | "last" | "default" | null;
+                    activity?: ("delivery" | "pickup") | null;
+                    /** @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`. */
+                    optimizationOrder?: ("first" | "last" | "default") | null;
                     /** @description Number of packages in the stop */
                     packageCount?: number | null;
                     /** @description Weight information for this stop. */
@@ -4490,7 +4950,7 @@ export interface operations {
                     /** @description Notes for the stop */
                     notes?: string | null;
                     /** @description Client ID of the retailer in Spoke Connect */
-                    circuitClientId?: string | null;
+                    clientId?: string | null;
                     /** @description List of barcode IDs associated with this stop */
                     barcodes?: string[];
                     /** @description Key-value pairs of custom stop properties for this stop. The keys must be unique and match a custom stop property defined in your team. */
@@ -4501,34 +4961,53 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Default Response */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The ids of the successfully imported stops */
                         success: string[];
+                        /** @description The failed stops */
                         failed: {
                             error: {
+                                /** @description The error that occurred during import */
                                 message: string;
                             };
+                            /** @description The stop that failed to import */
                             stop: {
+                                /** @description The address of the stop that failed to import */
                                 address: {
+                                    /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                                     addressName: string | null;
+                                    /** @description The first line of the address. */
                                     addressLineOne: string | null;
+                                    /** @description The second line of the address. */
                                     addressLineTwo: string | null;
+                                    /** @description The city of the address. */
                                     city: string | null;
+                                    /** @description The state of the address. */
                                     state: string | null;
+                                    /** @description The zip code of the address. */
                                     zip: string | null;
+                                    /** @description The country of the address. */
                                     country: string | null;
+                                    /** @description The latitude of the address in decimal degrees. */
                                     latitude: number | null;
+                                    /** @description The longitude of the address in decimal degrees. */
                                     longitude: number | null;
                                 };
+                                /** @description The recipient of the stop that failed to import */
                                 recipient: {
+                                    /** @description External ID of the recipient, as defined by the API user */
                                     externalId: string | null;
+                                    /** @description Email of the recipient */
                                     email: string | null;
+                                    /** @description Phone number of the recipient */
                                     phone: string | null;
+                                    /** @description Name of the recipient */
                                     name: string | null;
                                 } | null;
                             };
@@ -4544,21 +5023,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -4577,12 +5062,14 @@ export interface operations {
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
                     } | {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
                     } | {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "vehicle_capacity_disabled";
@@ -4598,11 +5085,12 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The plan's optimization is in progress. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -4616,7 +5104,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to create stop */
             410: {
                 headers: {
                     [name: string]: unknown;
@@ -4628,7 +5116,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to create stop */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -4639,30 +5127,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -4683,7 +5179,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Default Response */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -4701,26 +5197,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Plan is no longer accessible due to data access restrictions. Upgrade to a plan that supports a longer delivery history period to access it. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -4736,18 +5238,19 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Not Found */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The plan's optimization is in progress. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -4761,7 +5264,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to delete stop */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -4772,30 +5275,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -4824,14 +5335,16 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Default Response */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The drivers. */
                         drivers: components["schemas"]["driverSchema"][];
+                        /** @description The next page token. */
                         nextPageToken: string | null;
                     };
                 };
@@ -4843,49 +5356,63 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -4906,10 +5433,7 @@ export interface operations {
                     name?: string | null;
                     /** @description The name displayed for the driver in the UI */
                     displayName?: string | null;
-                    /**
-                     * Format: email
-                     * @description Driver's email
-                     */
+                    /** @description Driver's email */
                     email?: string | null;
                     /** @description Driver's phone number */
                     phone?: string | null;
@@ -4975,23 +5499,11 @@ export interface operations {
                         } | null;
                         /** @description The maximum number of stops that can be allocated to this driver. */
                         maxStops?: number | null;
-                        /**
-                         * @description How fast this driver drives compared to the Team's average
-                         * @default average
-                         * @enum {string|null}
-                         */
-                        drivingSpeed?: "slower" | "average" | "faster" | null;
-                        /**
-                         * @description How fast this driver delivers compared to the Team's average
-                         * @default average
-                         * @enum {string|null}
-                         */
-                        deliverySpeed?: "slower" | "average" | "faster" | null;
-                        /**
-                         * @description The type of vehicle used by this driver
-                         * @enum {string|null}
-                         */
-                        vehicleType?: "bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike" | null;
+                        drivingSpeed?: ("slower" | "average" | "faster") | null;
+                        /** @description How fast this driver delivers compared to the Team's average */
+                        deliverySpeed?: ("slower" | "average" | "faster") | null;
+                        /** @description The type of vehicle used by this driver */
+                        vehicleType?: ("bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike") | null;
                     } | null;
                 };
             };
@@ -5006,33 +5518,39 @@ export interface operations {
                     "application/json": components["schemas"]["driverSchema"];
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to validate the request */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to create driver. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -5043,30 +5561,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -5101,26 +5627,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided driver id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -5131,30 +5663,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -5187,26 +5727,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided driver id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -5217,30 +5763,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -5327,23 +5881,11 @@ export interface operations {
                         } | null;
                         /** @description The maximum number of stops that can be allocated to this driver. */
                         maxStops?: number | null;
-                        /**
-                         * @description How fast this driver drives compared to the Team's average
-                         * @default average
-                         * @enum {string|null}
-                         */
-                        drivingSpeed?: "slower" | "average" | "faster" | null;
-                        /**
-                         * @description How fast this driver delivers compared to the Team's average
-                         * @default average
-                         * @enum {string|null}
-                         */
-                        deliverySpeed?: "slower" | "average" | "faster" | null;
-                        /**
-                         * @description The type of vehicle used by this driver
-                         * @enum {string|null}
-                         */
-                        vehicleType?: "bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike" | null;
+                        drivingSpeed?: ("slower" | "average" | "faster") | null;
+                        /** @description How fast this driver delivers compared to the Team's average */
+                        deliverySpeed?: ("slower" | "average" | "faster") | null;
+                        /** @description The type of vehicle used by this driver */
+                        vehicleType?: ("bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike") | null;
                     } | null;
                 };
             };
@@ -5358,33 +5900,39 @@ export interface operations {
                     "application/json": components["schemas"]["driverSchema"];
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to validate the request */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to update driver */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -5395,30 +5943,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -5440,10 +5996,7 @@ export interface operations {
                     name?: string | null;
                     /** @description The name displayed for the driver in the UI */
                     displayName?: string | null;
-                    /**
-                     * Format: email
-                     * @description Driver's email
-                     */
+                    /** @description Driver's email */
                     email?: string | null;
                     /** @description Driver's phone number */
                     phone?: string | null;
@@ -5509,80 +6062,106 @@ export interface operations {
                         } | null;
                         /** @description The maximum number of stops that can be allocated to this driver. */
                         maxStops?: number | null;
-                        /**
-                         * @description How fast this driver drives compared to the Team's average
-                         * @default average
-                         * @enum {string|null}
-                         */
-                        drivingSpeed?: "slower" | "average" | "faster" | null;
-                        /**
-                         * @description How fast this driver delivers compared to the Team's average
-                         * @default average
-                         * @enum {string|null}
-                         */
-                        deliverySpeed?: "slower" | "average" | "faster" | null;
-                        /**
-                         * @description The type of vehicle used by this driver
-                         * @enum {string|null}
-                         */
-                        vehicleType?: "bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike" | null;
+                        drivingSpeed?: ("slower" | "average" | "faster") | null;
+                        /** @description How fast this driver delivers compared to the Team's average */
+                        deliverySpeed?: ("slower" | "average" | "faster") | null;
+                        /** @description The type of vehicle used by this driver */
+                        vehicleType?: ("bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike") | null;
                     } | null;
                 }[];
             };
         };
         responses: {
-            /** @description Default Response */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The ids of the successfully imported drivers */
                         success: string[];
+                        /** @description The failed drivers */
                         failed: {
                             error: {
+                                /** @description The error that occurred during import */
                                 message: string;
                             };
+                            /** @description The request body for creating a driver. Even though `email` and `phone` are optional, you must provide at least one of */
                             driver: {
+                                /** @description The driver's full name */
                                 name?: string | null;
+                                /** @description The name displayed for the driver in the UI */
                                 displayName?: string | null;
+                                /** @description Driver's email */
                                 email?: string | null;
+                                /** @description Driver's phone number */
                                 phone?: string | null;
+                                /** @description The depot IDs associated with the driver in the format `depots/<id>`, duplicates will be ignored. If set to null or not provided, the team's Main depot will be set as driver depot. */
                                 depots?: string[] | null;
                                 routeOverrides?: {
+                                    /** @description Address of a start location for every route assigned to this driver. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
                                     startAddress?: {
+                                        /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                                         addressName?: string | null;
+                                        /** @description The first line of the address. */
                                         addressLineOne?: string | null;
+                                        /** @description The second line of the address. */
                                         addressLineTwo?: string | null;
+                                        /** @description The city of the address. */
                                         city?: string | null;
+                                        /** @description The state of the address. */
                                         state?: string | null;
+                                        /** @description The zip code of the address. */
                                         zip?: string | null;
+                                        /** @description The country of the address. */
                                         country?: string | null;
+                                        /** @description The latitude of the address in decimal degrees. */
                                         latitude?: number | null;
+                                        /** @description The longitude of the address in decimal degrees. */
                                         longitude?: number | null;
                                     } | null;
+                                    /** @description Address of an end location for every route assigned to this driver. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
                                     endAddress?: {
+                                        /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                                         addressName?: string | null;
+                                        /** @description The first line of the address. */
                                         addressLineOne?: string | null;
+                                        /** @description The second line of the address. */
                                         addressLineTwo?: string | null;
+                                        /** @description The city of the address. */
                                         city?: string | null;
+                                        /** @description The state of the address. */
                                         state?: string | null;
+                                        /** @description The zip code of the address. */
                                         zip?: string | null;
+                                        /** @description The country of the address. */
                                         country?: string | null;
+                                        /** @description The latitude of the address in decimal degrees. */
                                         latitude?: number | null;
+                                        /** @description The longitude of the address in decimal degrees. */
                                         longitude?: number | null;
                                     } | null;
+                                    /** @description The start time for the driver's work day. */
                                     startTime?: {
+                                        /** @description Hour of the day */
                                         hour: number;
+                                        /** @description Minute of the hour */
                                         minute: number;
                                     } | null;
+                                    /** @description The end time for the driver's work day. */
                                     endTime?: {
+                                        /** @description Hour of the day */
                                         hour: number;
+                                        /** @description Minute of the hour */
                                         minute: number;
                                     } | null;
+                                    /** @description The maximum number of stops that can be allocated to this driver. */
                                     maxStops?: number | null;
                                     drivingSpeed?: ("slower" | "average" | "faster") | null;
+                                    /** @description How fast this driver delivers compared to the Team's average */
                                     deliverySpeed?: ("slower" | "average" | "faster") | null;
+                                    /** @description The type of vehicle used by this driver */
                                     vehicleType?: ("bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike") | null;
                                 } | null;
                             };
@@ -5590,33 +6169,39 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to validate the request */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to import drivers. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -5627,30 +6212,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -5671,14 +6264,16 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Default Response */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The depots. */
                         depots: components["schemas"]["depotSchema"][];
+                        /** @description The next page token. */
                         nextPageToken: string | null;
                     };
                 };
@@ -5690,49 +6285,63 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -5799,28 +6408,16 @@ export interface operations {
                             /** @description The longitude of the address in decimal degrees. */
                             longitude?: number | null;
                         } | null;
-                        /** @description Time of day in hours and minutes. Uses a 24 hour clock. */
                         endTime?: {
                             /** @description Hour of the day */
                             hour: number;
                             /** @description Minute of the hour */
                             minute: number;
                         } | null;
-                        /** @description Estimated time at the stop */
                         defaultTimeAtStop?: number | null;
-                        /** @description Maximum number of stops per driver */
                         maxStops?: number | null;
-                        /**
-                         * @description Default vehicle type
-                         * @enum {string|null}
-                         */
-                        vehicleType?: "bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike" | null;
-                        /**
-                         * @description Attempt to visit stops on this side of the road
-                         * @enum {string|null}
-                         */
-                        roadSide?: "any" | "left_only" | "right_only" | null;
-                        /** @description Return to the startAddress at the end of the route */
+                        vehicleType?: ("bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike") | null;
+                        roadSide?: ("any" | "left_only" | "right_only") | null;
                         roundTrip?: boolean | null;
                     };
                 };
@@ -5843,54 +6440,70 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     } | {
                         message: string;
+                        /** @description The error code. */
                         code?: string;
                         param: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -5925,26 +6538,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided depot id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -5956,30 +6575,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -6012,9 +6639,13 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     } | {
                         /** @enum {string} */
@@ -6022,42 +6653,52 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -6127,28 +6768,16 @@ export interface operations {
                             /** @description The longitude of the address in decimal degrees. */
                             longitude?: number | null;
                         } | null;
-                        /** @description Time of day in hours and minutes. Uses a 24 hour clock. */
                         endTime?: {
                             /** @description Hour of the day */
                             hour: number;
                             /** @description Minute of the hour */
                             minute: number;
                         } | null;
-                        /** @description Estimated time at the stop */
                         defaultTimeAtStop?: number | null;
-                        /** @description Maximum number of stops per driver */
                         maxStops?: number | null;
-                        /**
-                         * @description Default vehicle type
-                         * @enum {string|null}
-                         */
-                        vehicleType?: "bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike" | null;
-                        /**
-                         * @description Attempt to visit stops on this side of the road
-                         * @enum {string|null}
-                         */
-                        roadSide?: "any" | "left_only" | "right_only" | null;
-                        /** @description Return to the startAddress at the end of the route */
+                        vehicleType?: ("bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike") | null;
+                        roadSide?: ("any" | "left_only" | "right_only") | null;
                         roundTrip?: boolean | null;
                     };
                 };
@@ -6171,31 +6800,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     } | {
                         message: string;
+                        /** @description The error code. */
                         code?: string;
                         param: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided depot id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -6207,30 +6844,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -6298,77 +6943,93 @@ export interface operations {
                             /** @description The longitude of the address in decimal degrees. */
                             longitude?: number | null;
                         } | null;
-                        /** @description Time of day in hours and minutes. Uses a 24 hour clock. */
                         endTime?: {
                             /** @description Hour of the day */
                             hour: number;
                             /** @description Minute of the hour */
                             minute: number;
                         } | null;
-                        /** @description Estimated time at the stop */
                         defaultTimeAtStop?: number | null;
-                        /** @description Maximum number of stops per driver */
                         maxStops?: number | null;
-                        /**
-                         * @description Default vehicle type
-                         * @enum {string|null}
-                         */
-                        vehicleType?: "bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike" | null;
-                        /**
-                         * @description Attempt to visit stops on this side of the road
-                         * @enum {string|null}
-                         */
-                        roadSide?: "any" | "left_only" | "right_only" | null;
-                        /** @description Return to the startAddress at the end of the route */
+                        vehicleType?: ("bike" | "scooter" | "car" | "small_truck" | "truck" | "electric_cargo_bike") | null;
+                        roadSide?: ("any" | "left_only" | "right_only") | null;
                         roundTrip?: boolean | null;
                     };
                 }[];
             };
         };
         responses: {
-            /** @description Default Response */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The ids of the successfully imported depots */
                         success: string[];
+                        /** @description The failed depots */
                         failed: {
                             error: {
+                                /** @description The error that occurred during import */
                                 message: string;
                             };
+                            /** @description The depot that failed to import */
                             depot: {
                                 name: string;
                                 routeOverrides: {
                                     startAddress: {
+                                        /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                                         addressName?: string | null;
+                                        /** @description The first line of the address. */
                                         addressLineOne?: string | null;
+                                        /** @description The second line of the address. */
                                         addressLineTwo?: string | null;
+                                        /** @description The city of the address. */
                                         city?: string | null;
+                                        /** @description The state of the address. */
                                         state?: string | null;
+                                        /** @description The zip code of the address. */
                                         zip?: string | null;
+                                        /** @description The country of the address. */
                                         country?: string | null;
+                                        /** @description The latitude of the address in decimal degrees. */
                                         latitude?: number | null;
+                                        /** @description The longitude of the address in decimal degrees. */
                                         longitude?: number | null;
                                     };
+                                    /** @description Route start time */
                                     startTime: {
+                                        /** @description Hour of the day */
                                         hour: number;
+                                        /** @description Minute of the hour */
                                         minute: number;
                                     };
                                     endAddress?: {
+                                        /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                                         addressName?: string | null;
+                                        /** @description The first line of the address. */
                                         addressLineOne?: string | null;
+                                        /** @description The second line of the address. */
                                         addressLineTwo?: string | null;
+                                        /** @description The city of the address. */
                                         city?: string | null;
+                                        /** @description The state of the address. */
                                         state?: string | null;
+                                        /** @description The zip code of the address. */
                                         zip?: string | null;
+                                        /** @description The country of the address. */
                                         country?: string | null;
+                                        /** @description The latitude of the address in decimal degrees. */
                                         latitude?: number | null;
+                                        /** @description The longitude of the address in decimal degrees. */
                                         longitude?: number | null;
                                     } | null;
+                                    /** @description Route end time */
                                     endTime?: {
+                                        /** @description Hour of the day */
                                         hour: number;
+                                        /** @description Minute of the hour */
                                         minute: number;
                                     } | null;
                                     defaultTimeAtStop?: number | null;
@@ -6389,49 +7050,63 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -6457,19 +7132,21 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided depot id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -6481,30 +7158,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -6539,26 +7224,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Route is no longer accessible due to data access restrictions. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -6572,7 +7263,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided route id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -6584,30 +7275,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -6628,14 +7327,16 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Default Response */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The routes. */
                         routes: components["schemas"]["routeSchema"][];
+                        /** @description The next page token. */
                         nextPageToken: string | null;
                     };
                 };
@@ -6647,49 +7348,63 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -6718,14 +7433,16 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Default Response */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The stops list. */
                         stops: components["schemas"]["stopSchema"][];
+                        /** @description The next page token. */
                         nextPageToken: string | null;
                     };
                 };
@@ -6737,26 +7454,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Route is no longer accessible due to data access restrictions. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -6770,7 +7493,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided route id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -6782,30 +7505,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -6840,26 +7571,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Not Found */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -6873,7 +7610,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Client Error */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -6887,16 +7624,20 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -6931,26 +7672,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Not Found */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -6964,16 +7711,20 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -7004,14 +7755,16 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Default Response */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The operations. */
                         operations: components["schemas"]["operationSchema"][];
+                        /** @description The next page token. */
                         nextPageToken: string | null;
                     };
                 };
@@ -7023,35 +7776,45 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -7086,26 +7849,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided unassigned stop id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -7117,30 +7886,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -7173,60 +7950,75 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Not Found */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -7247,7 +8039,6 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
-                    /** @description Recipient information for this stop */
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
@@ -7258,7 +8049,6 @@ export interface operations {
                         /** @description Name of the recipient */
                         name?: string | null;
                     } | null;
-                    /** @description Order information for this stop */
                     orderInfo?: {
                         /** @description Products in this stop */
                         products?: string[];
@@ -7269,17 +8059,12 @@ export interface operations {
                         /** @description Seller website */
                         sellerWebsite?: string | null;
                     } | null;
-                    /** @description Payment on delivery (also known as "Cash on Delivery") data for this stop */
                     paymentOnDelivery?: {
                         /** @description Amount *in minor units* (e.g. cents) to be collected upon delivery */
                         amount?: number | null;
-                        /**
-                         * @description Currency of the payment. Defaults to the team's currency.
-                         * @enum {string|null}
-                         */
-                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                        /** @description Currency of the payment. Defaults to the team's currency. */
+                        currency?: ("AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR") | null;
                     } | null;
-                    /** @description Proof of attempt requirement settings for this stop */
                     proofOfAttemptRequirements?: {
                         /** @description Whether proof of attempt is required for this stop */
                         enabled?: boolean | null;
@@ -7289,14 +8074,10 @@ export interface operations {
                     /**
                      * @description Activity type
                      * @default delivery
-                     * @enum {string|null}
                      */
-                    activity?: "delivery" | "pickup" | null;
-                    /**
-                     * @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`.
-                     * @enum {string|null}
-                     */
-                    optimizationOrder?: "first" | "last" | "default" | null;
+                    activity?: ("delivery" | "pickup") | null;
+                    /** @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`. */
+                    optimizationOrder?: ("first" | "last" | "default") | null;
                     /** @description Number of packages in the stop */
                     packageCount?: number | null;
                     /** @description Weight information for this stop. */
@@ -7357,21 +8138,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -7383,12 +8170,14 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
                     } | {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "vehicle_capacity_disabled";
@@ -7397,41 +8186,50 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Not Found */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -7457,14 +8255,16 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Default Response */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The unassignedStops. */
                         unassignedStops: components["schemas"]["unassignedStopSchema"][];
+                        /** @description The next page token. */
                         nextPageToken: string | null;
                     };
                 };
@@ -7476,35 +8276,45 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -7544,7 +8354,6 @@ export interface operations {
                     };
                     /** @description The Depot ID that this unassigned stop belongs to, in the format `depot/<id>`. If not provided, or null, it will default to the team's main depot. */
                     depot?: string | null;
-                    /** @description Timing information for this stop */
                     timing?: {
                         /** @description Time of day of the earliest time this stop should happen */
                         earliestAttemptTime?: {
@@ -7563,7 +8372,6 @@ export interface operations {
                         /** @description Duration in seconds of the activity in this stop, only set if you want to override the default. This can be set up to 8 hours. */
                         estimatedAttemptDuration?: number | null;
                     } | null;
-                    /** @description Recipient information for this stop */
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
@@ -7574,7 +8382,6 @@ export interface operations {
                         /** @description Name of the recipient */
                         name?: string | null;
                     } | null;
-                    /** @description Order information for this stop */
                     orderInfo?: {
                         /** @description Products in this stop */
                         products?: string[];
@@ -7585,17 +8392,12 @@ export interface operations {
                         /** @description Seller website */
                         sellerWebsite?: string | null;
                     } | null;
-                    /** @description Payment on delivery (also known as "Cash on Delivery") data for this stop */
                     paymentOnDelivery?: {
                         /** @description Amount *in minor units* (e.g. cents) to be collected upon delivery */
                         amount?: number | null;
-                        /**
-                         * @description Currency of the payment. Defaults to the team's currency.
-                         * @enum {string|null}
-                         */
-                        currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                        /** @description Currency of the payment. Defaults to the team's currency. */
+                        currency?: ("AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR") | null;
                     } | null;
-                    /** @description Proof of attempt requirement settings for this stop */
                     proofOfAttemptRequirements?: {
                         /** @description Whether proof of attempt is required for this stop */
                         enabled?: boolean | null;
@@ -7605,14 +8407,10 @@ export interface operations {
                     /**
                      * @description Activity type
                      * @default delivery
-                     * @enum {string|null}
                      */
-                    activity?: "delivery" | "pickup" | null;
-                    /**
-                     * @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`.
-                     * @enum {string|null}
-                     */
-                    optimizationOrder?: "first" | "last" | "default" | null;
+                    activity?: ("delivery" | "pickup") | null;
+                    /** @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`. */
+                    optimizationOrder?: ("first" | "last" | "default") | null;
                     /** @description Number of packages in the stop */
                     packageCount?: number | null;
                     /** @description Weight information for this stop. */
@@ -7628,7 +8426,7 @@ export interface operations {
                     /** @description Notes for the stop */
                     notes?: string | null;
                     /** @description Client ID of the retailer in Spoke Connect */
-                    circuitClientId?: string | null;
+                    clientId?: string | null;
                     /** @description List of barcode IDs associated with this stop */
                     barcodes?: string[];
                     /** @description Key-value pairs of custom stop properties for this stop. The keys must be unique and match a custom stop property defined in your team. */
@@ -7655,21 +8453,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -7681,12 +8485,14 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
                     } | {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "vehicle_capacity_disabled";
@@ -7695,7 +8501,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided driver id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -7706,7 +8512,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to create stop */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -7717,30 +8523,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -7779,7 +8593,6 @@ export interface operations {
                             /** @description The longitude of the address in decimal degrees. */
                             longitude?: number | null;
                         };
-                        /** @description Timing information for this stop */
                         timing?: {
                             /** @description Time of day of the earliest time this stop should happen */
                             earliestAttemptTime?: {
@@ -7798,7 +8611,6 @@ export interface operations {
                             /** @description Duration in seconds of the activity in this stop, only set if you want to override the default. This can be set up to 8 hours. */
                             estimatedAttemptDuration?: number | null;
                         } | null;
-                        /** @description Recipient information for this stop */
                         recipient?: {
                             /** @description External ID of the recipient, as defined by the API user */
                             externalId?: string | null;
@@ -7809,7 +8621,6 @@ export interface operations {
                             /** @description Name of the recipient */
                             name?: string | null;
                         } | null;
-                        /** @description Order information for this stop */
                         orderInfo?: {
                             /** @description Products in this stop */
                             products?: string[];
@@ -7820,17 +8631,12 @@ export interface operations {
                             /** @description Seller website */
                             sellerWebsite?: string | null;
                         } | null;
-                        /** @description Payment on delivery (also known as "Cash on Delivery") data for this stop */
                         paymentOnDelivery?: {
                             /** @description Amount *in minor units* (e.g. cents) to be collected upon delivery */
                             amount?: number | null;
-                            /**
-                             * @description Currency of the payment. Defaults to the team's currency.
-                             * @enum {string|null}
-                             */
-                            currency?: "AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR" | null;
+                            /** @description Currency of the payment. Defaults to the team's currency. */
+                            currency?: ("AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR") | null;
                         } | null;
-                        /** @description Proof of attempt requirement settings for this stop */
                         proofOfAttemptRequirements?: {
                             /** @description Whether proof of attempt is required for this stop */
                             enabled?: boolean | null;
@@ -7840,14 +8646,10 @@ export interface operations {
                         /**
                          * @description Activity type
                          * @default delivery
-                         * @enum {string|null}
                          */
-                        activity?: "delivery" | "pickup" | null;
-                        /**
-                         * @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`.
-                         * @enum {string|null}
-                         */
-                        optimizationOrder?: "first" | "last" | "default" | null;
+                        activity?: ("delivery" | "pickup") | null;
+                        /** @description The preferred order of this stop in the optimized route. If not provided or `"default"`, the stop will be placed in the optimal order, decided by the optimization algorithm. Otherwise it will be placed either `"first"` or `"last"`. */
+                        optimizationOrder?: ("first" | "last" | "default") | null;
                         /** @description Number of packages in the stop */
                         packageCount?: number | null;
                         /** @description Weight information for this stop. */
@@ -7863,7 +8665,7 @@ export interface operations {
                         /** @description Notes for the stop */
                         notes?: string | null;
                         /** @description Client ID of the retailer in Spoke Connect */
-                        circuitClientId?: string | null;
+                        clientId?: string | null;
                         /** @description List of barcode IDs associated with this stop */
                         barcodes?: string[];
                         /** @description Key-value pairs of custom stop properties for this stop. The keys must be unique and match a custom stop property defined in your team. */
@@ -7877,34 +8679,53 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Default Response */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The ids of the successfully imported unassigned stops */
                         success: string[];
+                        /** @description The failed unassigned stops */
                         failed: {
                             error: {
+                                /** @description The error that occurred during import */
                                 message: string;
                             };
+                            /** @description The unassigned stop that failed to import */
                             unassignedStop: {
+                                /** @description The address of the unassigned stop that failed to import */
                                 address: {
+                                    /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                                     addressName: string | null;
+                                    /** @description The first line of the address. */
                                     addressLineOne: string | null;
+                                    /** @description The second line of the address. */
                                     addressLineTwo: string | null;
+                                    /** @description The city of the address. */
                                     city: string | null;
+                                    /** @description The state of the address. */
                                     state: string | null;
+                                    /** @description The zip code of the address. */
                                     zip: string | null;
+                                    /** @description The country of the address. */
                                     country: string | null;
+                                    /** @description The latitude of the address in decimal degrees. */
                                     latitude: number | null;
+                                    /** @description The longitude of the address in decimal degrees. */
                                     longitude: number | null;
                                 };
+                                /** @description The recipient of the unassigned stop that failed to import */
                                 recipient: {
+                                    /** @description External ID of the recipient, as defined by the API user */
                                     externalId: string | null;
+                                    /** @description Email of the recipient */
                                     email: string | null;
+                                    /** @description Phone number of the recipient */
                                     phone: string | null;
+                                    /** @description Name of the recipient */
                                     name: string | null;
                                 } | null;
                             };
@@ -7919,21 +8740,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -7945,12 +8772,14 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
                     } | {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "vehicle_capacity_disabled";
@@ -7966,11 +8795,12 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to create stop */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -7981,30 +8811,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -8027,6 +8865,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The set of custom stop properties. */
                         customStopProperties: components["schemas"]["customStopPropertySchema"][];
                     };
                 };
@@ -8038,32 +8877,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Feature not included in your team subscription */
             403: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "feature_not_in_subscription";
@@ -8072,30 +8918,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -8114,16 +8968,20 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Default Response */
+            /** @description The definition of a custom stop property. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The custom stop property id */
                         id: string;
+                        /** @description The name of the custom stop property */
                         name: string;
+                        /** @description Whether this custom stop property is visible to drivers. */
                         visibleToDrivers: boolean;
+                        /** @description Whether this property is visible to recipients. */
                         visibleToRecipients: boolean;
                     };
                 };
@@ -8135,32 +8993,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Feature not included in your team subscription */
             403: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                         /** @enum {string} */
                         code: "feature_not_in_subscription";
@@ -8169,7 +9034,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided custom stop property id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -8180,30 +9045,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -8224,10 +9097,7 @@ export interface operations {
                     name?: string | null;
                     /** @description The name displayed for the member in the UI */
                     displayName?: string | null;
-                    /**
-                     * Format: email
-                     * @description Member's email
-                     */
+                    /** @description Member's email */
                     email?: string | null;
                     /** @description The existing driver to link the member to */
                     linkedDriverId?: string | null;
@@ -8251,33 +9121,39 @@ export interface operations {
                     "application/json": components["schemas"]["memberSchema"];
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to validate the request */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Conflict when creating member. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -8288,7 +9164,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to create member. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -8299,30 +9175,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -8355,26 +9239,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided member id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -8385,41 +9275,50 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to delete member. */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -8444,11 +9343,8 @@ export interface operations {
                     name?: string | null;
                     /** @description The name displayed for the member in the UI */
                     displayName?: string | null;
-                    /**
-                     * @description The operational role given to the member.
-                     * @enum {string|null}
-                     */
-                    role?: "admin" | "depot-manager" | "dispatcher" | "read-only" | null;
+                    /** @description The operational role given to the member. */
+                    role?: ("admin" | "depot-manager" | "dispatcher" | "read-only") | null;
                     /** @description The depot IDs associated with the member in the format `depots/<id>`, duplicates will be ignored. If set to null or not provided, the team's Main depot will be set as member depot. */
                     depots?: string[] | null;
                 };
@@ -8464,33 +9360,39 @@ export interface operations {
                     "application/json": components["schemas"]["memberSchema"];
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to validate the request */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The provided member id does not exist */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -8501,7 +9403,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to update member. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -8512,30 +9414,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -8557,10 +9467,7 @@ export interface operations {
                     name?: string | null;
                     /** @description The name displayed for the member in the UI */
                     displayName?: string | null;
-                    /**
-                     * Format: email
-                     * @description Member's email
-                     */
+                    /** @description Member's email */
                     email?: string | null;
                     /** @description The existing driver to link the member to */
                     linkedDriverId?: string | null;
@@ -8582,51 +9489,69 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The ids of the successfully imported members */
                         success: string[];
+                        /** @description The failed members */
                         failed: {
                             error: {
+                                /** @description The error that occurred during import */
                                 message: string;
                             };
+                            /** @description The request body for creating a member. */
                             member: {
+                                /** @description The member's full name */
                                 name?: string | null;
+                                /** @description The name displayed for the member in the UI */
                                 displayName?: string | null;
+                                /** @description Member's email */
                                 email?: string | null;
+                                /** @description The existing driver to link the member to */
                                 linkedDriverId?: string | null;
-                                /** @enum {string} */
+                                /**
+                                 * @description The operational role given to the member.
+                                 * @enum {string}
+                                 */
                                 role: "admin" | "depot-manager" | "dispatcher" | "read-only";
+                                /** @description The depot IDs associated with the member in the format `depots/<id>`, duplicates will be ignored. If set to null or not provided, the team's Main depot will be set as member depot. */
                                 depots?: string[] | null;
                             };
                         }[];
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to validate the request */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Conflict when creating member. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -8637,7 +9562,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Failed to import members. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -8648,30 +9573,38 @@ export interface operations {
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
@@ -8700,22 +9633,32 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Default Response */
+            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The stops list. */
                         stops: ({
-                            /** @enum {string} */
+                            /**
+                             * @description The type of the stop.
+                             * @enum {string}
+                             */
                             type: "stop";
+                            /** @description The stop. */
                             stop: components["schemas"]["stopSchema"];
                         } | {
-                            /** @enum {string} */
+                            /**
+                             * @description The type of the stop.
+                             * @enum {string}
+                             */
                             type: "unassignedStop";
+                            /** @description The unassigned stop. */
                             unassignedStop: components["schemas"]["unassignedStopSchema"];
                         })[];
+                        /** @description The next page token. */
                         nextPageToken: string | null;
                     };
                 };
@@ -8727,67 +9670,87 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     } | {
                         message: string;
+                        /** @description The error code. */
                         code?: string;
                         /** @enum {string} */
                         param: "filter";
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     } | {
                         message: string;
+                        /** @description The error code. */
                         code?: string;
                         /** @enum {string} */
                         param: "sortField";
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     } | {
                         message: string;
+                        /** @description The error code. */
                         code?: string;
                         /** @enum {string} */
                         param: "pageToken";
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description An internal server error occurred */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
             };
-            /** @description Default Response */
+            /** @description The default error model */
             default: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @description The error message. */
                         message: string;
+                        /** @description The error code. */
                         code?: string;
+                        /** @description The parameter that caused the error. */
                         param?: string;
+                        /** @description The URL with more information about the error. */
                         url?: string;
                     };
                 };
