@@ -2,6 +2,7 @@
 
 [![JSR](https://jsr.io/badges/@incapost/spoke)](https://jsr.io/@incapost/spoke)
 [![CI](https://github.com/incapost/spoke/actions/workflows/ci.yml/badge.svg)](https://github.com/incapost/spoke/actions/workflows/ci.yml)
+![Test coverage](./coverage.svg)
 
 Minimal utilities for working with the
 [Spoke REST API](https://developer.dispatch.spoke.com). Includes Spoke API

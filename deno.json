@@ -5,7 +5,7 @@
   "license": "MIT",
   "tasks": {
     "build": "deno x openapi-typescript https://developer.dispatch.spoke.com/openapi-v1.json -o ./types.d.ts",
-    "ok": "deno fmt --check && deno lint && deno test --doc"
+    "ok": "deno fmt --check && deno lint && deno test --doc --coverage && deno x lcov-badge-generator -o coverage.svg coverage/lcov.info"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@^1.0.19",
@@ -13,10 +13,7 @@
     "@std/testing": "jsr:@std/testing@^1.0.19",
     "openapi-fetch": "npm:openapi-fetch@^0.17.0"
   },
-  "compilerOptions": {
-    "noUncheckedIndexedAccess": true
-  },
   "fmt": {
-    "exclude": ["openapi.json", "types.d.ts"]
+    "exclude": ["types.d.ts", "coverage.svg"]
   }
 }
