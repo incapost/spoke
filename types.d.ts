@@ -250,7 +250,7 @@ export interface paths {
         put?: never;
         /**
          * Update an existing stop
-         * @description Update a stop on live plans. When the plan is not writable, this endpoint starts an editing session and the action can be applied through a new optimization, or be discarded. It does not support updating a stop's location, nor the `clientId`. To do so, delete the stop and create a new one.
+         * @description Update a stop on live plans. When the plan is not writable, this endpoint starts an editing session and the action can be applied through a new optimization, or be discarded. It does not support updating a stop's location, the `clientId`, nor service fields. To do so, delete the stop and create a new one.
          */
         post: operations["updateLiveStop"];
         delete?: never;
@@ -1343,6 +1343,64 @@ export interface components {
             } | null;
             /** @description The associated Client ID of the Spoke Connect */
             clientId: string | null;
+            /** @description Service offering data for this stop. */
+            serviceInfo: {
+                /** @enum {string} */
+                status: "available";
+                /** @description Service offering data for this stop. */
+                value: {
+                    /** @description The service offering identifier, as configured in Spoke Dispatch, captured at assignment time. Not currently discoverable through the public API. */
+                    identifier: string;
+                    /** @description The human-readable service name. */
+                    name: string;
+                    /** @description The SLA start time in seconds since epoch. */
+                    slaStartsAt: number;
+                    /** @description The computed SLA due date in the team's timezone. */
+                    slaDueDate: {
+                        /** @description The day of the date. */
+                        day: number;
+                        /** @description The month of the date. */
+                        month: number;
+                        /** @description The year of the date. */
+                        year: number;
+                    };
+                    /** @description SLA due time-of-day in the team's timezone, null for day-level SLA. */
+                    slaDueTime: components["schemas"]["timeOfDaySchema"] | null;
+                    /** @description The delivery horizon for this service. */
+                    deliveryHorizon: {
+                        /** @description The time unit of the delivery horizon. Known: `days`, `hours`. */
+                        unit: ("days" | "hours") | string;
+                        /** @description The number of time units in the delivery horizon. */
+                        value: number;
+                    };
+                    /** @description Price for this service at assignment time. */
+                    price: {
+                        /** @description Price in minor currency units (e.g. cents). */
+                        value: number;
+                        /** @description 3-letter ISO 4217 currency code. */
+                        currency: ("AED" | "ARS" | "AUD" | "BRL" | "CAD" | "CHF" | "CLP" | "CNY" | "COP" | "DKK" | "EGP" | "EUR" | "GBP" | "HKD" | "HUF" | "ILS" | "INR" | "JPY" | "KRW" | "MYR" | "MXN" | "NOK" | "NZD" | "PEN" | "RON" | "RUB" | "SAR" | "SEK" | "SGD" | "TRY" | "USD" | "UYU" | "ZAR") | string;
+                    };
+                    /** @description Whether cash on delivery is enabled via the service. */
+                    hasPaymentOnDelivery: boolean;
+                    /** @description When the service was assigned in seconds since epoch. */
+                    definedAt: number;
+                } | {
+                    /** @description Null indicates no service offering is linked. */
+                    identifier: null;
+                    /** @description The SLA start time in seconds since epoch. */
+                    slaStartsAt: number;
+                };
+            } | {
+                /** @enum {string} */
+                status: "empty";
+            } | {
+                /** @enum {string} */
+                status: "restricted";
+                requiredFeature?: string;
+                upgradeUrl?: string;
+                /** @enum {string} */
+                restrictionCode?: "subscription_not_supported";
+            };
         };
         /** @description Time of day in hours and minutes. Uses a 24 hour clock. */
         timeOfDaySchema: {
@@ -1683,7 +1741,7 @@ export interface operations {
                     "application/json": components["schemas"]["planSchema"];
                 };
             };
-            /** @description Failed to validate the request */
+            /** @description The request is invalid, or a driver is not active. */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -1698,6 +1756,13 @@ export interface operations {
                         param?: string;
                         /** @description The URL with more information about the error. */
                         url?: string;
+                    } | {
+                        /** @enum {string} */
+                        message: "Driver is not active";
+                        /** @enum {string} */
+                        code: "driver_not_active";
+                        /** @description The parameter that caused the error. */
+                        param?: string;
                     };
                 };
             };
@@ -2151,7 +2216,7 @@ export interface operations {
                     "application/json": components["schemas"]["planSchema"];
                 };
             };
-            /** @description Failed to validate the request */
+            /** @description The request is invalid, or a driver is not active. */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -2166,6 +2231,13 @@ export interface operations {
                         param?: string;
                         /** @description The URL with more information about the error. */
                         url?: string;
+                    } | {
+                        /** @enum {string} */
+                        message: "Driver is not active";
+                        /** @enum {string} */
+                        code: "driver_not_active";
+                        /** @description The parameter that caused the error. */
+                        param?: string;
                     };
                 };
             };
@@ -3281,6 +3353,10 @@ export interface operations {
                     customProperties?: {
                         [key: string]: string | null;
                     } | null;
+                    serviceInfo?: {
+                        identifier?: string | null;
+                        slaStartsAt?: number | null;
+                    } | null;
                 };
             };
         };
@@ -3569,6 +3645,10 @@ export interface operations {
                     /** @description Key-value pairs of custom stop properties for this stop. The keys must be unique and match a custom stop property defined in your team. */
                     customProperties?: {
                         [key: string]: string | null;
+                    } | null;
+                    serviceInfo?: {
+                        identifier?: string | null;
+                        slaStartsAt?: number | null;
                     } | null;
                 }[];
             };
@@ -4120,6 +4200,10 @@ export interface operations {
                     customProperties?: {
                         [key: string]: string | null;
                     } | null;
+                    serviceInfo?: {
+                        identifier?: string | null;
+                        slaStartsAt?: number | null;
+                    } | null;
                     timing?: {
                         /** @description Time of day of the earliest time this stop should happen */
                         earliestAttemptTime?: {
@@ -4151,7 +4235,7 @@ export interface operations {
                     "application/json": components["schemas"]["stopSchema"];
                 };
             };
-            /** @description The request has errors. Either syntactic or semantic */
+            /** @description The request has errors (syntactic or semantic), or the service assignment is not allowed for this stop. */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -4166,6 +4250,20 @@ export interface operations {
                         param?: string;
                         /** @description The URL with more information about the error. */
                         url?: string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "service_activity_not_supported";
+                        /** @description The parameter that caused the error. */
+                        param?: string;
+                    } | {
+                        /** @enum {string} */
+                        message: "Cannot clear slaStartsAt on a stop with an assigned service.";
+                        /** @enum {string} */
+                        code: "sla_start_not_clearable";
+                        /** @description The parameter that caused the error. */
+                        param?: string;
                     };
                 };
             };
@@ -4213,7 +4311,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Not Found */
+            /** @description The plan, stop, or referenced service offering could not be found. */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -4222,6 +4320,13 @@ export interface operations {
                     "application/json": {
                         /** @description The error message. */
                         message: string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "service_offering_not_found";
+                        /** @description The parameter that caused the error. */
+                        param?: string;
                     };
                 };
             };
@@ -4415,6 +4520,10 @@ export interface operations {
                     customProperties?: {
                         [key: string]: string | null;
                     } | null;
+                    serviceInfo?: {
+                        identifier?: string | null;
+                        slaStartsAt?: number | null;
+                    } | null;
                 };
             };
         };
@@ -4592,7 +4701,7 @@ export interface operations {
             };
             cookie?: never;
         };
-        /** @description The request body for updating a stop. All the values present in the request will update the stop value, if you wish to update only certain fields, only set them and do not set the others. Any fields not set will not be updated. */
+        /** @description The request body for updating a live stop. Service fields are not supported on live stops. */
         requestBody?: {
             content: {
                 "application/json": {
@@ -4956,6 +5065,10 @@ export interface operations {
                     /** @description Key-value pairs of custom stop properties for this stop. The keys must be unique and match a custom stop property defined in your team. */
                     customProperties?: {
                         [key: string]: string | null;
+                    } | null;
+                    serviceInfo?: {
+                        identifier?: string | null;
+                        slaStartsAt?: number | null;
                     } | null;
                 }[];
             };
@@ -9150,6 +9263,17 @@ export interface operations {
                         message: string;
                         /** @description The URL with more information about the error. */
                         url?: string;
+                    };
+                };
+            };
+            /** @description The linked driver could not be found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: "Driver not found" | string;
                     };
                 };
             };

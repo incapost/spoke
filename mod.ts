@@ -42,10 +42,8 @@ export function createSpokeClient(
 }
 
 // Until Spoke publishes this definition
-type WebhookRequestBodyBase = { version: "v1"; created: number };
-
 export type WebhookRequestBody =
-  & WebhookRequestBodyBase
+  & { version: "v1"; created: number }
   & (
     | {
       type:
