@@ -734,6 +734,7 @@ export interface paths {
          *       - `activity` - The activity performed at the stop (`delivery` or `pickup`)
          *       - `notes` - Notes associated with the stop
          *       - `orderInfo.sellerOrderId` - The order ID from the seller
+         *       - `orderInfo.invoiceNumber` - The invoice number of the order
          *       - `orderInfo.sellerWebsite` - The website URL of the seller
          *       - `address.address` - The full address of the stop
          *       - `address.addressLineOne` - The first line of the stop address
@@ -1195,6 +1196,8 @@ export interface components {
             orderInfo: {
                 /** @description The products of the stop. */
                 products: string[];
+                /** @description Invoice number associated with the order. */
+                invoiceNumber: string | null;
                 /** @description Name of the seller where the order is from. */
                 sellerName: string | null;
                 /** @description Id of the seller where the order is from. */
@@ -1454,6 +1457,8 @@ export interface components {
             orderInfo: {
                 /** @description The products of the stop. */
                 products: string[];
+                /** @description Invoice number associated with the order. */
+                invoiceNumber: string | null;
                 /** @description Name of the seller where the order is from. */
                 sellerName: string | null;
                 /** @description Id of the seller where the order is from. */
@@ -3305,6 +3310,8 @@ export interface operations {
                     orderInfo?: {
                         /** @description Products in this stop */
                         products?: string[];
+                        /** @description Invoice number */
+                        invoiceNumber?: string | null;
                         /** @description Seller order ID */
                         sellerOrderId?: string | null;
                         /** @description Seller name */
@@ -3370,7 +3377,7 @@ export interface operations {
                     "application/json": components["schemas"]["stopSchema"];
                 };
             };
-            /** @description The request has errors. Either syntactic or semantic */
+            /** @description The request has errors (syntactic or semantic), or the named service is not eligible for the stop (operating area, depot, or activity). */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -3385,6 +3392,34 @@ export interface operations {
                         param?: string;
                         /** @description The URL with more information about the error. */
                         url?: string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "operating_area_violation";
+                        /** @description The parameter that caused the error. */
+                        param?: string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "operating_area_missing_coordinates";
+                        /** @description The parameter that caused the error. */
+                        param?: string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "service_not_available_at_depot";
+                        /** @description The parameter that caused the error. */
+                        param?: string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "service_activity_not_supported";
+                        /** @description The parameter that caused the error. */
+                        param?: string;
                     };
                 };
             };
@@ -3598,6 +3633,8 @@ export interface operations {
                     orderInfo?: {
                         /** @description Products in this stop */
                         products?: string[];
+                        /** @description Invoice number */
+                        invoiceNumber?: string | null;
                         /** @description Seller order ID */
                         sellerOrderId?: string | null;
                         /** @description Seller name */
@@ -4154,6 +4191,8 @@ export interface operations {
                     orderInfo?: {
                         /** @description Products in this stop */
                         products?: string[];
+                        /** @description Invoice number */
+                        invoiceNumber?: string | null;
                         /** @description Seller order ID */
                         sellerOrderId?: string | null;
                         /** @description Seller name */
@@ -4235,7 +4274,7 @@ export interface operations {
                     "application/json": components["schemas"]["stopSchema"];
                 };
             };
-            /** @description The request has errors (syntactic or semantic), or the service assignment is not allowed for this stop. */
+            /** @description The request has errors (syntactic or semantic), or the service is not eligible for the stop (activity, operating area, or depot availability). */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -4262,6 +4301,27 @@ export interface operations {
                         message: "Cannot clear slaStartsAt on a stop with an assigned service.";
                         /** @enum {string} */
                         code: "sla_start_not_clearable";
+                        /** @description The parameter that caused the error. */
+                        param?: string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "operating_area_violation";
+                        /** @description The parameter that caused the error. */
+                        param?: string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "operating_area_missing_coordinates";
+                        /** @description The parameter that caused the error. */
+                        param?: string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "service_not_available_at_depot";
                         /** @description The parameter that caused the error. */
                         param?: string;
                     };
@@ -4472,6 +4532,8 @@ export interface operations {
                     orderInfo?: {
                         /** @description Products in this stop */
                         products?: string[];
+                        /** @description Invoice number */
+                        invoiceNumber?: string | null;
                         /** @description Seller order ID */
                         sellerOrderId?: string | null;
                         /** @description Seller name */
@@ -4718,6 +4780,8 @@ export interface operations {
                     orderInfo?: {
                         /** @description Products in this stop */
                         products?: string[];
+                        /** @description Invoice number */
+                        invoiceNumber?: string | null;
                         /** @description Seller order ID */
                         sellerOrderId?: string | null;
                         /** @description Seller name */
@@ -5018,6 +5082,8 @@ export interface operations {
                     orderInfo?: {
                         /** @description Products in this stop */
                         products?: string[];
+                        /** @description Invoice number */
+                        invoiceNumber?: string | null;
                         /** @description Seller order ID */
                         sellerOrderId?: string | null;
                         /** @description Seller name */
@@ -8165,6 +8231,8 @@ export interface operations {
                     orderInfo?: {
                         /** @description Products in this stop */
                         products?: string[];
+                        /** @description Invoice number */
+                        invoiceNumber?: string | null;
                         /** @description Seller order ID */
                         sellerOrderId?: string | null;
                         /** @description Seller name */
@@ -8498,6 +8566,8 @@ export interface operations {
                     orderInfo?: {
                         /** @description Products in this stop */
                         products?: string[];
+                        /** @description Invoice number */
+                        invoiceNumber?: string | null;
                         /** @description Seller order ID */
                         sellerOrderId?: string | null;
                         /** @description Seller name */
@@ -8737,6 +8807,8 @@ export interface operations {
                         orderInfo?: {
                             /** @description Products in this stop */
                             products?: string[];
+                            /** @description Invoice number */
+                            invoiceNumber?: string | null;
                             /** @description Seller order ID */
                             sellerOrderId?: string | null;
                             /** @description Seller name */
