@@ -1,11 +1,11 @@
 {
   "name": "@incapost/spoke",
   "version": "1.0.3",
-  "exports": "./mod.ts",
+  "exports": "./dispatch/mod.ts",
   "license": "MIT",
   "tasks": {
-    "build": "deno x openapi-typescript https://developer.dispatch.spoke.com/openapi-v1.json -o ./types.d.ts",
-    "ok": "deno fmt --check && deno lint && deno test --doc --coverage && deno x lcov-badge-generator -o coverage.svg coverage/lcov.info"
+    "build": "deno x openapi-typescript https://developer.dispatch.spoke.com/openapi-v1.json -o ./dispatch/types.d.ts",
+    "ok": "deno fmt --check && deno lint && deno test --doc --coverage && npx lcov-badge-generator -o coverage.svg coverage/lcov.info"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@^1.0.19",
@@ -14,6 +14,6 @@
     "openapi-fetch": "npm:openapi-fetch@^0.17.0"
   },
   "fmt": {
-    "exclude": ["types.d.ts", "coverage.svg"]
+    "exclude": ["dispatch/types.d.ts", "coverage.svg"]
   }
 }
