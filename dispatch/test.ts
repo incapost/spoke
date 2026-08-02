@@ -1,12 +1,12 @@
 import { assertEquals, assertRejects } from "@std/assert";
 import { stub } from "@std/testing/mock";
 import {
-  createSpokeClient,
+  createSpokeDispatchClient,
   getWebhookRequestBodyOrThrow,
   type WebhookRequestBody,
 } from "./mod.ts";
 
-Deno.test("createSpokeClient()", async () => {
+Deno.test("createSpokeDispatchClient()", async () => {
   const apiKey = "test-api-key";
   using _fetchStub = stub(globalThis, "fetch", (input) => {
     const request = input as Request;
@@ -15,7 +15,7 @@ Deno.test("createSpokeClient()", async () => {
     return Promise.resolve(new Response("{}"));
   });
 
-  const client = createSpokeClient(apiKey);
+  const client = createSpokeDispatchClient(apiKey);
   await client.GET("/plans");
 });
 

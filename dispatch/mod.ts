@@ -7,18 +7,18 @@ export * from "./types.d.ts";
 const BASE_URL = "https://api.spoke.com/public/v1";
 
 /**
- * Create a Spoke REST API client.
+ * Create a Spoke Dispatch REST API client.
  *
- * Supports v1 of the Spoke API, which is the latest version as of May 2026.
+ * Supports v1 of the Spoke Dispatch API, which is the latest version as of May 2026.
  *
  * @see {@link https://developer.dispatch.spoke.com | Spoke API Documentation}
  * for endpoints and usage details.
  *
  * @example Usage
  * ```ts ignore
- * import { createSpokeClient } from "@incapost/spoke";
+ * import { createSpokeDispatchClient } from "@incapost/spoke/dispatch";
  *
- * const spokeClient = createSpokeClient("your_spoke_api_key");
+ * const spokeClient = createSpokeDispatchClient("your_spoke_api_key");
  * const { data } = await spokeClient.GET("/plans");
  * // ...
  * ```
@@ -26,7 +26,7 @@ const BASE_URL = "https://api.spoke.com/public/v1";
  * @param apiKey Spoke REST API key. Generate one at {@link https://dispatch.spoke.com/settings/integrations}.
  * @returns Spoke REST API client
  */
-export function createSpokeClient(
+export function createSpokeDispatchClient(
   apiKey: string,
 ): ReturnType<typeof createClient<paths>> {
   const spokeClient = createClient<paths>({
@@ -83,7 +83,7 @@ export type WebhookRequestBody =
  *
  * @example Usage
  * ```ts
- * import { getWebhookRequestBodyOrThrow } from "@incapost/spoke";
+ * import { getWebhookRequestBodyOrThrow } from "@incapost/spoke/dispatch";
  *
  * async function handleWebhook(request: Request) {
  *   try {

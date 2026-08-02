@@ -12,11 +12,11 @@ JavaScript/TypeScript runtimes and browsers.
 
 ```ts ignore
 import {
-  createSpokeClient,
+  createSpokeDispatchClient,
   getWebhookRequestBodyOrThrow,
-} from "@incapost/spoke";
+} from "@incapost/spoke/dispatch";
 
-const spokeClient = createSpokeClient("your_spoke_api_key");
+const spokeClient = createSpokeDispatchClient("your_spoke_api_key");
 
 // Webhook handler — verifies signature and parses body in one step
 async function handleWebhook(request: Request): Promise<Response> {
