@@ -9,12 +9,12 @@
   "tasks": {
     "build:dispatch": "deno x openapi-typescript https://developer.dispatch.spoke.com/openapi-v1.json -o ./dispatch/types.d.ts",
     "build:connect": "deno x openapi-typescript https://developer.connect.spoke.com/openapi-connect-v1.json -o ./connect/types.d.ts",
-    "ok": "deno fmt --check && deno lint && deno test --doc --coverage && deno x lcov-badge-generator -o coverage.svg coverage/lcov.info"
+    "ok": "deno fmt --check && deno lint && deno test --doc --coverage"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@^1.0.19",
     "@std/crypto": "jsr:@std/crypto@^1.1.0",
-    "@std/testing": "jsr:@std/testing@^1.0.19",
+    "@std/testing": "jsr:@std/testing@^1.0.20",
     "openapi-fetch": "npm:openapi-fetch@^0.17.0"
   },
   "fmt": {
