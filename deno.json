@@ -15,7 +15,8 @@
     "@std/assert": "jsr:@std/assert@^1.0.19",
     "@std/crypto": "jsr:@std/crypto@^1.1.0",
     "@std/testing": "jsr:@std/testing@^1.0.20",
-    "openapi-fetch": "npm:openapi-fetch@^0.17.0"
+    "openapi-fetch": "npm:openapi-fetch@^0.17.0",
+    "openapi-typescript": "npm:openapi-typescript@^7.13.0"
   },
   "fmt": {
     "exclude": ["dispatch/types.d.ts", "connect/types.d.ts", "coverage.svg"]

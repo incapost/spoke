@@ -3437,7 +3437,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description The plan is no longer accessible or the stop contains fields that require upgrading your team subscription/settings. */
+            /** @description The plan is no longer accessible or the stop contains fields that require upgrading your team subscription. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -3457,13 +3457,6 @@ export interface operations {
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
-                    } | {
-                        /** @description The error message. */
-                        message: string;
-                        /** @enum {string} */
-                        code: "vehicle_capacity_disabled";
-                        /** @enum {string} */
-                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
@@ -3519,7 +3512,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Failed to create stop */
+            /** @description The stop is unprocessable. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -3527,6 +3520,13 @@ export interface operations {
                 content: {
                     "application/json": {
                         message: "An error occurred when creating the stop, but the error is not due to a validation error, instead it is another conflict, check if the provided data is semantically valid." | string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "vehicle_capacity_disabled";
+                        /** @enum {string} */
+                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
@@ -3777,7 +3777,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description The plan is no longer accessible or one or more stops contain fields that require upgrading your team subscription/settings. */
+            /** @description The plan is no longer accessible or one or more stops contain fields that require upgrading your team subscription. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -3797,13 +3797,6 @@ export interface operations {
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
-                    } | {
-                        /** @description The error message. */
-                        message: string;
-                        /** @enum {string} */
-                        code: "vehicle_capacity_disabled";
-                        /** @enum {string} */
-                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
@@ -3859,7 +3852,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Failed to create stop */
+            /** @description The stop is unprocessable. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -3867,6 +3860,13 @@ export interface operations {
                 content: {
                     "application/json": {
                         message: "An error occurred when creating the stop, but the error is not due to a validation error, instead it is another conflict, check if the provided data is semantically valid." | string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "vehicle_capacity_disabled";
+                        /** @enum {string} */
+                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
@@ -4341,7 +4341,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description The plan is no longer accessible or the stop contains fields that require upgrading your team subscription/settings. */
+            /** @description The plan is no longer accessible or the stop contains fields that require upgrading your team subscription. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -4361,13 +4361,6 @@ export interface operations {
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
-                    } | {
-                        /** @description The error message. */
-                        message: string;
-                        /** @enum {string} */
-                        code: "vehicle_capacity_disabled";
-                        /** @enum {string} */
-                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
@@ -4418,7 +4411,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Failed to create stop */
+            /** @description The stop is unprocessable. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -4426,6 +4419,13 @@ export interface operations {
                 content: {
                     "application/json": {
                         message: "An error occurred when creating the stop, but the error is not due to a validation error, instead it is another conflict, check if the provided data is semantically valid." | string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "vehicle_capacity_disabled";
+                        /** @enum {string} */
+                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
@@ -4634,7 +4634,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description The plan is no longer accessible or the stop contains fields that require upgrading your team subscription/settings. */
+            /** @description The plan is no longer accessible or the stop contains fields that require upgrading your team subscription. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -4654,13 +4654,6 @@ export interface operations {
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
-                    } | {
-                        /** @description The error message. */
-                        message: string;
-                        /** @enum {string} */
-                        code: "vehicle_capacity_disabled";
-                        /** @enum {string} */
-                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
@@ -4702,7 +4695,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Failed to create stop */
+            /** @description The stop is unprocessable. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -4710,6 +4703,13 @@ export interface operations {
                 content: {
                     "application/json": {
                         message: "An error occurred when creating the stop, but the error is not due to a validation error, instead it is another conflict, check if the provided data is semantically valid." | string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "vehicle_capacity_disabled";
+                        /** @enum {string} */
+                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
@@ -4894,7 +4894,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description The plan is no longer accessible or the stop contains fields that require upgrading your team subscription/settings. */
+            /** @description The plan is no longer accessible or the stop contains fields that require upgrading your team subscription. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -4914,13 +4914,6 @@ export interface operations {
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
-                    } | {
-                        /** @description The error message. */
-                        message: string;
-                        /** @enum {string} */
-                        code: "vehicle_capacity_disabled";
-                        /** @enum {string} */
-                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
@@ -4976,6 +4969,13 @@ export interface operations {
                         code: "stop_not_editable";
                     } | {
                         message: "An error occurred when creating the stop, but the error is not due to a validation error, instead it is another conflict, check if the provided data is semantically valid." | string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "vehicle_capacity_disabled";
+                        /** @enum {string} */
+                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
@@ -5227,7 +5227,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description The plan is no longer accessible or one or more stops contain fields that require upgrading your team subscription/settings. */
+            /** @description The plan is no longer accessible or one or more stops contain fields that require upgrading your team subscription. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -5247,13 +5247,6 @@ export interface operations {
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
-                    } | {
-                        /** @description The error message. */
-                        message: string;
-                        /** @enum {string} */
-                        code: "vehicle_capacity_disabled";
-                        /** @enum {string} */
-                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
@@ -5295,7 +5288,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Failed to create stop */
+            /** @description The stop is unprocessable. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -5303,6 +5296,13 @@ export interface operations {
                 content: {
                     "application/json": {
                         message: "An error occurred when creating the stop, but the error is not due to a validation error, instead it is another conflict, check if the provided data is semantically valid." | string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "vehicle_capacity_disabled";
+                        /** @enum {string} */
+                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
@@ -8344,7 +8344,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description The request contains fields that are not supported by your team subscription/settings. */
+            /** @description The request contains fields that are not supported by your team subscription. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -8357,13 +8357,6 @@ export interface operations {
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
-                    } | {
-                        /** @description The error message. */
-                        message: string;
-                        /** @enum {string} */
-                        code: "vehicle_capacity_disabled";
-                        /** @enum {string} */
-                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
@@ -8376,6 +8369,22 @@ export interface operations {
                     "application/json": {
                         /** @description The error message. */
                         message: string;
+                    };
+                };
+            };
+            /** @description Vehicle capacity mode is disabled in the team's settings */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "vehicle_capacity_disabled";
+                        /** @enum {string} */
+                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
@@ -8661,7 +8670,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description The request contains fields that are not supported by your team subscription/settings. */
+            /** @description The request contains fields that are not supported by your team subscription. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -8674,13 +8683,6 @@ export interface operations {
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
-                    } | {
-                        /** @description The error message. */
-                        message: string;
-                        /** @enum {string} */
-                        code: "vehicle_capacity_disabled";
-                        /** @enum {string} */
-                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
@@ -8695,7 +8697,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Failed to create stop */
+            /** @description The stop is unprocessable. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -8703,6 +8705,13 @@ export interface operations {
                 content: {
                     "application/json": {
                         message: "An error occurred when creating the unassigned stop, but the error is not due to a validation error, instead it is another conflict, check if the provided data is semantically valid." | string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "vehicle_capacity_disabled";
+                        /** @enum {string} */
+                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
@@ -8950,7 +8959,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description The request contains fields that are not supported by your team subscription/settings. */
+            /** @description The request contains fields that are not supported by your team subscription. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -8963,13 +8972,6 @@ export interface operations {
                         code: "feature_not_in_subscription";
                         /** @enum {string} */
                         url: "https://dispatch.spoke.com/paywall";
-                    } | {
-                        /** @description The error message. */
-                        message: string;
-                        /** @enum {string} */
-                        code: "vehicle_capacity_disabled";
-                        /** @enum {string} */
-                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
@@ -8985,7 +8987,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description Failed to create stop */
+            /** @description The stop is unprocessable. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -8993,6 +8995,13 @@ export interface operations {
                 content: {
                     "application/json": {
                         message: "An error occurred when creating the unassigned stop, but the error is not due to a validation error, instead it is another conflict, check if the provided data is semantically valid." | string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @enum {string} */
+                        code: "vehicle_capacity_disabled";
+                        /** @enum {string} */
+                        url: "https://dispatch.spoke.com/settings/team-profile";
                     };
                 };
             };
