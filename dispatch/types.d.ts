@@ -3300,7 +3300,7 @@ export interface operations {
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
-                        /** @description Email of the recipient */
+                        /** @description The email address of the recipient. Multiple emails are not supported. */
                         email?: string | null;
                         /** @description Phone number of the recipient */
                         phone?: string | null;
@@ -3623,7 +3623,7 @@ export interface operations {
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
-                        /** @description Email of the recipient */
+                        /** @description The email address of the recipient. Multiple emails are not supported. */
                         email?: string | null;
                         /** @description Phone number of the recipient */
                         phone?: string | null;
@@ -3733,7 +3733,7 @@ export interface operations {
                                 recipient: {
                                     /** @description External ID of the recipient, as defined by the API user */
                                     externalId: string | null;
-                                    /** @description Email of the recipient */
+                                    /** @description The email address of the recipient. Multiple emails are not supported. */
                                     email: string | null;
                                     /** @description Phone number of the recipient */
                                     phone: string | null;
@@ -4181,7 +4181,7 @@ export interface operations {
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
-                        /** @description Email of the recipient */
+                        /** @description The email address of the recipient. Multiple emails are not supported. */
                         email?: string | null;
                         /** @description Phone number of the recipient */
                         phone?: string | null;
@@ -4522,7 +4522,7 @@ export interface operations {
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
-                        /** @description Email of the recipient */
+                        /** @description The email address of the recipient. Multiple emails are not supported. */
                         email?: string | null;
                         /** @description Phone number of the recipient */
                         phone?: string | null;
@@ -4770,7 +4770,7 @@ export interface operations {
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
-                        /** @description Email of the recipient */
+                        /** @description The email address of the recipient. Multiple emails are not supported. */
                         email?: string | null;
                         /** @description Phone number of the recipient */
                         phone?: string | null;
@@ -5072,7 +5072,7 @@ export interface operations {
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
-                        /** @description Email of the recipient */
+                        /** @description The email address of the recipient. Multiple emails are not supported. */
                         email?: string | null;
                         /** @description Phone number of the recipient */
                         phone?: string | null;
@@ -5182,7 +5182,7 @@ export interface operations {
                                 recipient: {
                                     /** @description External ID of the recipient, as defined by the API user */
                                     externalId: string | null;
-                                    /** @description Email of the recipient */
+                                    /** @description The email address of the recipient. Multiple emails are not supported. */
                                     email: string | null;
                                     /** @description Phone number of the recipient */
                                     phone: string | null;
@@ -8221,7 +8221,7 @@ export interface operations {
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
-                        /** @description Email of the recipient */
+                        /** @description The email address of the recipient. Multiple emails are not supported. */
                         email?: string | null;
                         /** @description Phone number of the recipient */
                         phone?: string | null;
@@ -8565,7 +8565,7 @@ export interface operations {
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
-                        /** @description Email of the recipient */
+                        /** @description The email address of the recipient. Multiple emails are not supported. */
                         email?: string | null;
                         /** @description Phone number of the recipient */
                         phone?: string | null;
@@ -8806,7 +8806,7 @@ export interface operations {
                         recipient?: {
                             /** @description External ID of the recipient, as defined by the API user */
                             externalId?: string | null;
-                            /** @description Email of the recipient */
+                            /** @description The email address of the recipient. Multiple emails are not supported. */
                             email?: string | null;
                             /** @description Phone number of the recipient */
                             phone?: string | null;
@@ -8915,7 +8915,7 @@ export interface operations {
                                 recipient: {
                                     /** @description External ID of the recipient, as defined by the API user */
                                     externalId: string | null;
-                                    /** @description Email of the recipient */
+                                    /** @description The email address of the recipient. Multiple emails are not supported. */
                                     email: string | null;
                                     /** @description Phone number of the recipient */
                                     phone: string | null;
