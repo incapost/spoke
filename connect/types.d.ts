@@ -272,7 +272,20 @@ export interface components {
                         products?: string[];
                         /** @description The amount of packages in the order. A barcode is created per package. Defaults to 1. */
                         packageCount?: number | null;
-                        /** @description The amount of the vehicle's load capacity this order takes up. Same unit as the retailer weight setting. */
+                        /** @description Weight information for this order. */
+                        weight?: {
+                            /** @description The weight amount for this order. */
+                            amount: number;
+                            /**
+                             * @description The weight unit in which the amount is specified.
+                             * @enum {string}
+                             */
+                            unit: "kilogram" | "pound" | "metric-ton";
+                        } | null;
+                        /**
+                         * @deprecated
+                         * @description Deprecated: weight in grams, regardless of the retailer weight setting. Use weight instead. Do not send both fields.
+                         */
                         packageLoadAmount?: number | null;
                         /** @description The retailer's own id for this order in their own system. */
                         externalId?: string | null;
@@ -349,7 +362,20 @@ export interface components {
                 products?: string[];
                 /** @description The amount of packages in the order. A barcode is created per package. Defaults to 1. */
                 packageCount?: number | null;
-                /** @description The amount of the vehicle's load capacity this order takes up. Same unit as the retailer weight setting. */
+                /** @description Weight information for this order. */
+                weight?: {
+                    /** @description The weight amount for this order. */
+                    amount: number;
+                    /**
+                     * @description The weight unit in which the amount is specified.
+                     * @enum {string}
+                     */
+                    unit: "kilogram" | "pound" | "metric-ton";
+                } | null;
+                /**
+                 * @deprecated
+                 * @description Deprecated: weight in grams, regardless of the retailer weight setting. Use weight instead. Do not send both fields.
+                 */
                 packageLoadAmount?: number | null;
                 /** @description The retailer's own id for this order in their own system. */
                 externalId?: string | null;
@@ -437,7 +463,20 @@ export interface components {
                     products?: string[];
                     /** @description The amount of packages in the order. A barcode is created per package. Defaults to 1. */
                     packageCount?: number | null;
-                    /** @description The amount of the vehicle's load capacity this order takes up. Same unit as the retailer weight setting. */
+                    /** @description Weight information for this order. */
+                    weight?: {
+                        /** @description The weight amount for this order. */
+                        amount: number;
+                        /**
+                         * @description The weight unit in which the amount is specified.
+                         * @enum {string}
+                         */
+                        unit: "kilogram" | "pound" | "metric-ton";
+                    } | null;
+                    /**
+                     * @deprecated
+                     * @description Deprecated: weight in grams, regardless of the retailer weight setting. Use weight instead. Do not send both fields.
+                     */
                     packageLoadAmount?: number | null;
                     /** @description The retailer's own id for this order in their own system. */
                     externalId?: string | null;
@@ -497,7 +536,17 @@ export interface components {
                 products: string[];
                 /** @description The amount of packages that are part of the order. For every package, a barcode will be created. */
                 packageCount: number;
-                /** @description The amount of the vehicle's load capacity this order takes up. Same unit as the retailer weight setting. */
+                /** @description Weight information for this order. */
+                weight: {
+                    /** @description The weight amount for this order. */
+                    amount: number;
+                    /** @description The weight unit in which the amount is specified (defined by the retailer's weight setting). */
+                    unit: ("kilogram" | "pound" | "metric-ton") | string;
+                } | null;
+                /**
+                 * @deprecated
+                 * @description Deprecated: weight in grams, regardless of the retailer weight setting. Use weight instead.
+                 */
                 packageLoadAmount: number | null;
                 /** @description The retailer's own id for this order in their own system. */
                 externalId: string | null;
@@ -665,13 +714,26 @@ export interface components {
                 /** @description The retailer's own id for this recipient in their system. */
                 externalId?: string | null;
             };
-            /** @description Package details accepted when creating or editing an order. */
+            /** @description Package details accepted when creating or editing an order. Send only one of weight or packageLoadAmount, including when clearing with null. */
             packageInfo?: {
                 /** @description The products that are part of the order. */
                 products?: string[];
                 /** @description The amount of packages in the order. A barcode is created per package. Defaults to 1. */
                 packageCount?: number | null;
-                /** @description The amount of the vehicle's load capacity this order takes up. Same unit as the retailer weight setting. */
+                /** @description Weight information for this order. */
+                weight?: {
+                    /** @description The weight amount for this order. */
+                    amount: number;
+                    /**
+                     * @description The weight unit in which the amount is specified.
+                     * @enum {string}
+                     */
+                    unit: "kilogram" | "pound" | "metric-ton";
+                } | null;
+                /**
+                 * @deprecated
+                 * @description Deprecated: weight in grams, regardless of the retailer weight setting. Use weight instead. Do not send both fields.
+                 */
                 packageLoadAmount?: number | null;
                 /** @description The retailer's own id for this order in their own system. */
                 externalId?: string | null;
@@ -694,14 +756,14 @@ export interface components {
                     /** @description Whether the driver must collect proof (signature or photo) on attempt. Omitted leaves it unchanged, `null` reverts to the courier's default. */
                     enabled?: boolean | null;
                 };
-                /** @description Hand-off fields accepted when editing an order. Switching to `ship_to_courier` clears the stored pickup location. */
+                /** @description Hand-off fields accepted when editing an order. Switching to `ship_to_courier` leaves the order at its location and reads back a null `pickupLocationId`, since a pickup location only applies to `pickup_by_courier`. */
                 handOffInfo?: {
                     /**
                      * @description How an order is handed off to the courier.
                      * @enum {string}
                      */
                     handOffType?: "ship_to_courier" | "pickup_by_courier";
-                    /** @description The retailer location the courier picks up from. Only applies when `handOffType` is `pickup_by_courier`. An omitted id keeps the stored location, and `null` clears it: a pickup order without one picks up at the retailer's main location when submitted. */
+                    /** @description The retailer location the courier picks up from. Only applies when `handOffType` is `pickup_by_courier`. Send an id to move the order to that location; an unknown or deleted id is refused with 422. Omitting the field and sending `null` both leave the stored location unchanged, so an order's location can be changed but not removed. */
                     pickupLocationId?: string | null;
                 };
             };
@@ -896,7 +958,20 @@ export interface operations {
                         products?: string[];
                         /** @description The amount of packages in the order. A barcode is created per package. Defaults to 1. */
                         packageCount?: number | null;
-                        /** @description The amount of the vehicle's load capacity this order takes up. Same unit as the retailer weight setting. */
+                        /** @description Weight information for this order. */
+                        weight?: {
+                            /** @description The weight amount for this order. */
+                            amount: number;
+                            /**
+                             * @description The weight unit in which the amount is specified.
+                             * @enum {string}
+                             */
+                            unit: "kilogram" | "pound" | "metric-ton";
+                        } | null;
+                        /**
+                         * @deprecated
+                         * @description Deprecated: weight in grams, regardless of the retailer weight setting. Use weight instead. Do not send both fields.
+                         */
                         packageLoadAmount?: number | null;
                         /** @description The retailer's own id for this order in their own system. */
                         externalId?: string | null;
@@ -956,7 +1031,17 @@ export interface operations {
                             products: string[];
                             /** @description The amount of packages that are part of the order. For every package, a barcode will be created. */
                             packageCount: number;
-                            /** @description The amount of the vehicle's load capacity this order takes up. Same unit as the retailer weight setting. */
+                            /** @description Weight information for this order. */
+                            weight: {
+                                /** @description The weight amount for this order. */
+                                amount: number;
+                                /** @description The weight unit in which the amount is specified (defined by the retailer's weight setting). */
+                                unit: ("kilogram" | "pound" | "metric-ton") | string;
+                            } | null;
+                            /**
+                             * @deprecated
+                             * @description Deprecated: weight in grams, regardless of the retailer weight setting. Use weight instead.
+                             */
                             packageLoadAmount: number | null;
                             /** @description The retailer's own id for this order in their own system. */
                             externalId: string | null;
@@ -1213,7 +1298,20 @@ export interface operations {
                             products?: string[];
                             /** @description The amount of packages in the order. A barcode is created per package. Defaults to 1. */
                             packageCount?: number | null;
-                            /** @description The amount of the vehicle's load capacity this order takes up. Same unit as the retailer weight setting. */
+                            /** @description Weight information for this order. */
+                            weight?: {
+                                /** @description The weight amount for this order. */
+                                amount: number;
+                                /**
+                                 * @description The weight unit in which the amount is specified.
+                                 * @enum {string}
+                                 */
+                                unit: "kilogram" | "pound" | "metric-ton";
+                            } | null;
+                            /**
+                             * @deprecated
+                             * @description Deprecated: weight in grams, regardless of the retailer weight setting. Use weight instead. Do not send both fields.
+                             */
                             packageLoadAmount?: number | null;
                             /** @description The retailer's own id for this order in their own system. */
                             externalId?: string | null;
@@ -1294,7 +1392,20 @@ export interface operations {
                                     products?: string[];
                                     /** @description The amount of packages in the order. A barcode is created per package. Defaults to 1. */
                                     packageCount?: number | null;
-                                    /** @description The amount of the vehicle's load capacity this order takes up. Same unit as the retailer weight setting. */
+                                    /** @description Weight information for this order. */
+                                    weight?: {
+                                        /** @description The weight amount for this order. */
+                                        amount: number;
+                                        /**
+                                         * @description The weight unit in which the amount is specified.
+                                         * @enum {string}
+                                         */
+                                        unit: "kilogram" | "pound" | "metric-ton";
+                                    } | null;
+                                    /**
+                                     * @deprecated
+                                     * @description Deprecated: weight in grams, regardless of the retailer weight setting. Use weight instead. Do not send both fields.
+                                     */
                                     packageLoadAmount?: number | null;
                                     /** @description The retailer's own id for this order in their own system. */
                                     externalId?: string | null;
@@ -1684,7 +1795,17 @@ export interface operations {
                             products: string[];
                             /** @description The amount of packages that are part of the order. For every package, a barcode will be created. */
                             packageCount: number;
-                            /** @description The amount of the vehicle's load capacity this order takes up. Same unit as the retailer weight setting. */
+                            /** @description Weight information for this order. */
+                            weight: {
+                                /** @description The weight amount for this order. */
+                                amount: number;
+                                /** @description The weight unit in which the amount is specified (defined by the retailer's weight setting). */
+                                unit: ("kilogram" | "pound" | "metric-ton") | string;
+                            } | null;
+                            /**
+                             * @deprecated
+                             * @description Deprecated: weight in grams, regardless of the retailer weight setting. Use weight instead.
+                             */
                             packageLoadAmount: number | null;
                             /** @description The retailer's own id for this order in their own system. */
                             externalId: string | null;
@@ -2058,7 +2179,20 @@ export interface operations {
                         products?: string[];
                         /** @description The amount of packages in the order. A barcode is created per package. Defaults to 1. */
                         packageCount?: number | null;
-                        /** @description The amount of the vehicle's load capacity this order takes up. Same unit as the retailer weight setting. */
+                        /** @description Weight information for this order. */
+                        weight?: {
+                            /** @description The weight amount for this order. */
+                            amount: number;
+                            /**
+                             * @description The weight unit in which the amount is specified.
+                             * @enum {string}
+                             */
+                            unit: "kilogram" | "pound" | "metric-ton";
+                        } | null;
+                        /**
+                         * @deprecated
+                         * @description Deprecated: weight in grams, regardless of the retailer weight setting. Use weight instead. Do not send both fields.
+                         */
                         packageLoadAmount?: number | null;
                         /** @description The retailer's own id for this order in their own system. */
                         externalId?: string | null;
@@ -2088,7 +2222,7 @@ export interface operations {
                              * @enum {string}
                              */
                             handOffType?: "ship_to_courier" | "pickup_by_courier";
-                            /** @description The retailer location the courier picks up from. Only applies when `handOffType` is `pickup_by_courier`. An omitted id keeps the stored location, and `null` clears it: a pickup order without one picks up at the retailer's main location when submitted. */
+                            /** @description The retailer location the courier picks up from. Only applies when `handOffType` is `pickup_by_courier`. Send an id to move the order to that location; an unknown or deleted id is refused with 422. Omitting the field and sending `null` both leave the stored location unchanged, so an order's location can be changed but not removed. */
                             pickupLocationId?: string | null;
                         };
                     };
@@ -2124,7 +2258,17 @@ export interface operations {
                             products: string[];
                             /** @description The amount of packages that are part of the order. For every package, a barcode will be created. */
                             packageCount: number;
-                            /** @description The amount of the vehicle's load capacity this order takes up. Same unit as the retailer weight setting. */
+                            /** @description Weight information for this order. */
+                            weight: {
+                                /** @description The weight amount for this order. */
+                                amount: number;
+                                /** @description The weight unit in which the amount is specified (defined by the retailer's weight setting). */
+                                unit: ("kilogram" | "pound" | "metric-ton") | string;
+                            } | null;
+                            /**
+                             * @deprecated
+                             * @description Deprecated: weight in grams, regardless of the retailer weight setting. Use weight instead.
+                             */
                             packageLoadAmount: number | null;
                             /** @description The retailer's own id for this order in their own system. */
                             externalId: string | null;
