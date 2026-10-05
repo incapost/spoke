@@ -784,7 +784,7 @@ export interface components {
                 /** @description Why the order was not withdrawn: a stable public code plus a human-readable message. */
                 error: {
                     /** @description The public error code. */
-                    code: ("order_not_submitted" | "order_already_scheduled" | "order_not_found" | "order_no_courier_link" | "order_courier_managed" | "order_read_only" | "order_concurrent_modification") | string;
+                    code: ("order_not_submitted" | "order_already_scheduled" | "order_not_found" | "order_no_courier_link" | "order_courier_managed" | "order_paid" | "order_read_only" | "order_concurrent_modification") | string;
                     /** @description A human-readable error message. */
                     message: string;
                 };
@@ -1677,7 +1677,7 @@ export interface operations {
                             /** @description Why the order was not withdrawn: a stable public code plus a human-readable message. */
                             error: {
                                 /** @description The public error code. */
-                                code: ("order_not_submitted" | "order_already_scheduled" | "order_not_found" | "order_no_courier_link" | "order_courier_managed" | "order_read_only" | "order_concurrent_modification") | string;
+                                code: ("order_not_submitted" | "order_already_scheduled" | "order_not_found" | "order_no_courier_link" | "order_courier_managed" | "order_paid" | "order_read_only" | "order_concurrent_modification") | string;
                                 /** @description A human-readable error message. */
                                 message: string;
                             };

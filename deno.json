@@ -9,6 +9,7 @@
   "tasks": {
     "build:dispatch": "deno x openapi-typescript https://developer.dispatch.spoke.com/openapi-v1.json -o ./dispatch/types.d.ts",
     "build:connect": "deno x openapi-typescript https://developer.connect.spoke.com/openapi-connect-v1.json -o ./connect/types.d.ts",
+    "build": "deno task build:dispatch && deno task build:connect",
     "ok": "deno fmt --check && deno lint && deno test --doc --coverage"
   },
   "imports": {
