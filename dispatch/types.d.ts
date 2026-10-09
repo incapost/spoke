@@ -885,13 +885,13 @@ export interface components {
             /** @description The driver id, in the format `drivers/<id>` */
             id: components["schemas"]["driverIdSchema"];
             /** @description The name of the driver. */
-            name: string | null;
+            name: null | string;
             /** @description The email of the driver. */
-            email: string | null;
+            email: null | string;
             /** @description The phone number of the driver. */
-            phone: string | null;
+            phone: null | string;
             /** @description The display name of the driver. */
-            displayName: string | null;
+            displayName: null | string;
             /** @description Whether the driver membership is active or paused. Paused drivers will not be assigned to any routes. */
             active: boolean;
             /** @description Depots associated with the driver. */
@@ -958,15 +958,15 @@ export interface components {
             /** @description The member id, in the format `members/<id>` */
             id: components["schemas"]["memberIdSchema"];
             /** @description The name of the member. */
-            name: string | null;
+            name: null | string;
             /** @description The email of the member. */
-            email: string | null;
+            email: null | string;
             /** @description The phone number of the member. */
-            phone: string | null;
+            phone: null | string;
             /** @description The driver linked to the member (where applicable). */
             linkedDriverId: components["schemas"]["driverIdSchema"] | null;
             /** @description The display name of the member. */
-            displayName: string | null;
+            displayName: null | string;
             /** @description Whether the member membership is active or paused. */
             active: boolean;
             /** @description Depots associated with the member. */
@@ -988,7 +988,7 @@ export interface components {
                 /** @description The time the operation started at, in seconds since epoch. */
                 startedAt: number;
                 /** @description The time the operation finished at, in seconds since epoch. */
-                finishedAt: number | null;
+                finishedAt: null | number;
                 /** @description The entity that started the operation. */
                 startedBy: "dispatcher" | "api" | string;
                 /** @description The id of the plan, in the format `plans/<id>`. */
@@ -1154,7 +1154,7 @@ export interface components {
                 /** @description The longitude of the address in decimal degrees. */
                 longitude: number | null;
                 /** @description The identifier of the place corresponding to this stop on Google Places */
-                placeId: string | null;
+                placeId: null | string;
                 /** @description Array of strings that is provided by the Google AutoCompleteAPI */
                 placeTypes: string[];
             };
@@ -1163,13 +1163,13 @@ export interface components {
             /** @description The driver IDs that can be assigned to this stop */
             allowedDrivers: string[];
             /** @description Estimated time that the driver will take to arrive at this stop from the previous stop in seconds. */
-            estimatedTravelDuration: number | null;
+            estimatedTravelDuration: null | number;
             /** @description The distance in meters between the previous stop and this stop. */
-            estimatedTravelDistance: number | null;
+            estimatedTravelDistance: null | number;
             /** @description Notes for the stop. */
-            notes: string | null;
+            notes: null | string;
             /** @description The number of packages. */
-            packageCount: number | null;
+            packageCount: null | number;
             weight: {
                 /** @description The weight amount for this stop. */
                 amount: number;
@@ -1185,11 +1185,11 @@ export interface components {
              */
             type: "start" | "stop" | "end";
             /** @description The label of the package. */
-            packageLabel: string | null;
+            packageLabel: null | string;
             /** @description The position of the stop in the route. */
-            stopPosition: number | null;
+            stopPosition: null | number;
             /** @description The recipient tracking link. */
-            trackingLink: string | null;
+            trackingLink: null | string;
             /** @description The web app link. */
             webAppLink: string;
             /** @description The order information of the stop. */
@@ -1197,13 +1197,13 @@ export interface components {
                 /** @description The products of the stop. */
                 products: string[];
                 /** @description Invoice number associated with the order. */
-                invoiceNumber: string | null;
+                invoiceNumber: null | string;
                 /** @description Name of the seller where the order is from. */
-                sellerName: string | null;
+                sellerName: null | string;
                 /** @description Id of the seller where the order is from. */
-                sellerOrderId: string | null;
+                sellerOrderId: null | string;
                 /** @description Website of the seller where the order is from. */
-                sellerWebsite: string | null;
+                sellerWebsite: null | string;
             };
             placeInVehicle: {
                 /** @description The x position of the package. */
@@ -1216,13 +1216,13 @@ export interface components {
             /** @description The recipient of the stop. */
             recipient: {
                 /** @description The name of the recipient. */
-                name: string | null;
+                name: null | string;
                 /** @description The email of the recipient. */
-                email: string | null;
+                email: null | string;
                 /** @description The phone of the recipient. */
-                phone: string | null;
+                phone: null | string;
                 /** @description The external id of the recipient. */
-                externalId: string | null;
+                externalId: null | string;
             };
             /**
              * @default delivery
@@ -1295,7 +1295,7 @@ export interface components {
             /** @description The proof of attempt requirements of the stop. */
             proofOfAttemptRequirements: {
                 /** @description Whether the proof of attempt is enabled.This only works if the team subscription has access to proof of delivery */
-                enabled: boolean | null;
+                enabled: null | boolean;
             };
             /** @description The id of the plan, in the format `plans/<id>`. */
             plan: components["schemas"]["planIdSchema"];
@@ -1328,8 +1328,15 @@ export interface components {
             };
             /** @description The timing data of the stop. */
             timing: {
+                /** @description Ordered arrival windows for this stop. */
+                timeWindows: {
+                    /** @description Earliest attempt time in this window. Null means there is no earliest time constraint. */
+                    earliestAttemptTime: components["schemas"]["timeOfDaySchema"] | null;
+                    /** @description Latest attempt time in this window. Null means there is no latest time constraint. */
+                    latestAttemptTime: components["schemas"]["timeOfDaySchema"] | null;
+                }[];
                 /** @description Time that the driver estimates to spend on the stop to do his job (deliver a parcel, visit a client, etc) in seconds. */
-                estimatedAttemptDuration: number | null;
+                estimatedAttemptDuration: null | number;
                 /** @description The earliest time that the driver should arrive at the stop */
                 earliestAttemptTime: components["schemas"]["timeOfDaySchema"] | null;
                 /** @description The latest time that the driver should arrive at the stop. */
@@ -1345,7 +1352,7 @@ export interface components {
                 [key: string]: string | null;
             } | null;
             /** @description The associated Client ID of the Spoke Connect */
-            clientId: string | null;
+            clientId: null | string;
             /** @description Service offering data for this stop. */
             serviceInfo: {
                 /** @enum {string} */
@@ -1432,7 +1439,7 @@ export interface components {
                 /** @description The longitude of the address in decimal degrees. */
                 longitude: number | null;
                 /** @description The identifier of the place corresponding to this stop on Google Places */
-                placeId: string | null;
+                placeId: null | string;
                 /** @description Array of strings that is provided by the Google AutoCompleteAPI */
                 placeTypes: string[];
             };
@@ -1441,9 +1448,9 @@ export interface components {
             /** @description The driver IDs that can be assigned to this stop. */
             allowedDrivers: string[];
             /** @description Notes for the stop. */
-            notes: string | null;
+            notes: null | string;
             /** @description The number of packages. */
-            packageCount: number | null;
+            packageCount: null | number;
             weight: {
                 /** @description The weight amount for this stop. */
                 amount: number;
@@ -1458,24 +1465,24 @@ export interface components {
                 /** @description The products of the stop. */
                 products: string[];
                 /** @description Invoice number associated with the order. */
-                invoiceNumber: string | null;
+                invoiceNumber: null | string;
                 /** @description Name of the seller where the order is from. */
-                sellerName: string | null;
+                sellerName: null | string;
                 /** @description Id of the seller where the order is from. */
-                sellerOrderId: string | null;
+                sellerOrderId: null | string;
                 /** @description Website of the seller where the order is from. */
-                sellerWebsite: string | null;
+                sellerWebsite: null | string;
             };
             /** @description The recipient of the stop. */
             recipient: {
                 /** @description The name of the recipient. */
-                name: string | null;
+                name: null | string;
                 /** @description The email of the recipient. */
-                email: string | null;
+                email: null | string;
                 /** @description The phone of the recipient. */
-                phone: string | null;
+                phone: null | string;
                 /** @description The external id of the recipient. */
-                externalId: string | null;
+                externalId: null | string;
             };
             /**
              * @default delivery
@@ -1483,11 +1490,18 @@ export interface components {
              */
             activity: "delivery" | "pickup";
             /** @description The recipient tracking link. */
-            trackingLink: string | null;
+            trackingLink: null | string;
             /** @description The timing data of the stop. */
             timing: {
+                /** @description Ordered arrival windows for this stop. */
+                timeWindows: {
+                    /** @description Earliest attempt time in this window. Null means there is no earliest time constraint. */
+                    earliestAttemptTime: components["schemas"]["timeOfDaySchema"] | null;
+                    /** @description Latest attempt time in this window. Null means there is no latest time constraint. */
+                    latestAttemptTime: components["schemas"]["timeOfDaySchema"] | null;
+                }[];
                 /** @description Time that the driver estimates to spend on the stop to do his job (deliver a parcel, visit a client, etc) in seconds. */
-                estimatedAttemptDuration: number | null;
+                estimatedAttemptDuration: null | number;
                 /** @description The earliest time that the driver should arrive at the stop */
                 earliestAttemptTime: components["schemas"]["timeOfDaySchema"] | null;
                 /** @description The latest time that the driver should arrive at the stop. */
@@ -1507,14 +1521,14 @@ export interface components {
             /** @description The proof of attempt requirements of the stop. */
             proofOfAttemptRequirements: {
                 /** @description Whether the proof of attempt is enabled.This only works if the team subscription has access to proof of delivery */
-                enabled: boolean | null;
+                enabled: null | boolean;
             };
             /** @description Custom properties of the stop, can be used to store additional information. */
             customProperties: {
                 [key: string]: string | null;
             } | null;
             /** @description The associated Client ID of the Spoke Connect */
-            clientId: string | null;
+            clientId: null | string;
         };
     };
     responses: never;
@@ -1558,7 +1572,7 @@ export interface operations {
                         /** @description The plans list. */
                         plans: components["schemas"]["planSchema"][];
                         /** @description The next page token. */
-                        nextPageToken: string | null;
+                        nextPageToken: null | string;
                     };
                 };
             };
@@ -1643,6 +1657,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @description The title of the plan. */
                     title: string;
                     /** @description The date the plan starts. Does not accept dates that are too far in the future or past. */
                     starts: {
@@ -2121,6 +2136,7 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    /** @description The title of the plan. */
                     title?: string;
                     /** @description The date the plan starts. Does not accept dates that are too far in the future or past. */
                     starts?: {
@@ -3143,7 +3159,7 @@ export interface operations {
                         /** @description The stops list. */
                         stops: components["schemas"]["stopSchema"][];
                         /** @description The next page token. */
-                        nextPageToken: string | null;
+                        nextPageToken: null | string;
                     };
                 };
             };
@@ -3259,6 +3275,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @description Address of the stop, at least one of the fields is required. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
                     address: {
                         /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                         addressName?: string | null;
@@ -3280,6 +3297,23 @@ export interface operations {
                         longitude?: number | null;
                     };
                     timing?: {
+                        /** @description Up to two ordered arrival windows for this stop. An empty array clears the windows. A single window may have one null bound; two windows must have both bounds set. Windows must not overlap or touch, and their total span must not exceed 24 hours. */
+                        timeWindows?: {
+                            /** @description Earliest attempt time in this window. Null means there is no earliest time constraint. Both bounds must be non-null when providing two windows. */
+                            earliestAttemptTime: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                            /** @description Latest attempt time in this window. Null means there is no latest time constraint. Both bounds must be non-null when providing two windows. */
+                            latestAttemptTime: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                        }[];
                         /** @description Time of day of the earliest time this stop should happen */
                         earliestAttemptTime?: {
                             /** @description Hour of the day */
@@ -3392,6 +3426,16 @@ export interface operations {
                         param?: string;
                         /** @description The URL with more information about the error. */
                         url?: string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @description A stable code identifying the time-window error. */
+                        code: ("time_windows_mismatch" | "time_windows_invalid" | "time_windows_unbounded" | "time_windows_too_many" | "time_windows_open_ended_with_multiple" | "time_windows_overlap" | "time_windows_span_exceeds_day") | string;
+                        /**
+                         * @description The request body field associated with this error; always `timing/timeWindows`.
+                         * @enum {string}
+                         */
+                        param: "timing/timeWindows";
                     } | {
                         /** @description The error message. */
                         message: string;
@@ -3582,6 +3626,7 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    /** @description Address of the stop, at least one of the fields is required. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
                     address: {
                         /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                         addressName?: string | null;
@@ -3602,24 +3647,6 @@ export interface operations {
                         /** @description The longitude of the address in decimal degrees. */
                         longitude?: number | null;
                     };
-                    timing?: {
-                        /** @description Time of day of the earliest time this stop should happen */
-                        earliestAttemptTime?: {
-                            /** @description Hour of the day */
-                            hour: number;
-                            /** @description Minute of the hour */
-                            minute: number;
-                        } | null;
-                        /** @description Time of day of the latest time this stop should happen */
-                        latestAttemptTime?: {
-                            /** @description Hour of the day */
-                            hour: number;
-                            /** @description Minute of the hour */
-                            minute: number;
-                        } | null;
-                        /** @description Duration in seconds of the activity in this stop, only set if you want to override the default. This can be set up to 8 hours. */
-                        estimatedAttemptDuration?: number | null;
-                    } | null;
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
@@ -3687,6 +3714,41 @@ export interface operations {
                         identifier?: string | null;
                         slaStartsAt?: number | null;
                     } | null;
+                    timing?: {
+                        /** @description Up to two ordered arrival windows for this stop. An empty array clears the windows. A single window may have one null bound; two windows must have both bounds set. Windows must not overlap or touch, and their total span must not exceed 24 hours. */
+                        timeWindows?: {
+                            /** @description Earliest attempt time in this window. Null means there is no earliest time constraint. Both bounds must be non-null when providing two windows. */
+                            earliestAttemptTime: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                            /** @description Latest attempt time in this window. Null means there is no latest time constraint. Both bounds must be non-null when providing two windows. */
+                            latestAttemptTime: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                        }[];
+                        /** @description Time of day of the earliest time this stop should happen */
+                        earliestAttemptTime?: {
+                            /** @description Hour of the day */
+                            hour: number;
+                            /** @description Minute of the hour */
+                            minute: number;
+                        } | null;
+                        /** @description Time of day of the latest time this stop should happen */
+                        latestAttemptTime?: {
+                            /** @description Hour of the day */
+                            hour: number;
+                            /** @description Minute of the hour */
+                            minute: number;
+                        } | null;
+                        /** @description Duration in seconds of the activity in this stop, only set if you want to override the default. This can be set up to 8 hours. */
+                        estimatedAttemptDuration?: number | null;
+                    } | null;
                 }[];
             };
         };
@@ -3705,6 +3767,10 @@ export interface operations {
                             error: {
                                 /** @description The error that occurred during import */
                                 message: string;
+                                /** @description Stable error code */
+                                code?: string;
+                                /** @description Invalid request parameter */
+                                param?: string;
                             };
                             /** @description The stop that failed to import */
                             stop: {
@@ -4244,6 +4310,23 @@ export interface operations {
                         slaStartsAt?: number | null;
                     } | null;
                     timing?: {
+                        /** @description Up to two ordered arrival windows for this stop. An empty array clears the windows. A single window may have one null bound; two windows must have both bounds set. Windows must not overlap or touch, and their total span must not exceed 24 hours. */
+                        timeWindows?: {
+                            /** @description Earliest attempt time in this window. Null means there is no earliest time constraint. Both bounds must be non-null when providing two windows. */
+                            earliestAttemptTime: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                            /** @description Latest attempt time in this window. Null means there is no latest time constraint. Both bounds must be non-null when providing two windows. */
+                            latestAttemptTime: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                        }[];
                         /** @description Time of day of the earliest time this stop should happen */
                         earliestAttemptTime?: {
                             /** @description Hour of the day */
@@ -4289,6 +4372,16 @@ export interface operations {
                         param?: string;
                         /** @description The URL with more information about the error. */
                         url?: string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @description A stable code identifying the time-window error. */
+                        code: ("time_windows_mismatch" | "time_windows_invalid" | "time_windows_unbounded" | "time_windows_too_many" | "time_windows_open_ended_with_multiple" | "time_windows_overlap" | "time_windows_span_exceeds_day") | string;
+                        /**
+                         * @description The request body field associated with this error; always `timing/timeWindows`.
+                         * @enum {string}
+                         */
+                        param: "timing/timeWindows";
                     } | {
                         /** @description The error message. */
                         message: string;
@@ -4481,6 +4574,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @description Address of the stop, at least one of the fields is required. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
                     address: {
                         /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                         addressName?: string | null;
@@ -4502,6 +4596,23 @@ export interface operations {
                         longitude?: number | null;
                     };
                     timing?: {
+                        /** @description Up to two ordered arrival windows for this stop. An empty array clears the windows. A single window may have one null bound; two windows must have both bounds set. Windows must not overlap or touch, and their total span must not exceed 24 hours. */
+                        timeWindows?: {
+                            /** @description Earliest attempt time in this window. Null means there is no earliest time constraint. Both bounds must be non-null when providing two windows. */
+                            earliestAttemptTime: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                            /** @description Latest attempt time in this window. Null means there is no latest time constraint. Both bounds must be non-null when providing two windows. */
+                            latestAttemptTime: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                        }[];
                         /** @description Time of day of the earliest time this stop should happen */
                         earliestAttemptTime?: {
                             /** @description Hour of the day */
@@ -4829,6 +4940,23 @@ export interface operations {
                         [key: string]: string | null;
                     } | null;
                     timing?: {
+                        /** @description Up to two ordered arrival windows for this stop. An empty array clears the windows. A single window may have one null bound; two windows must have both bounds set. Windows must not overlap or touch, and their total span must not exceed 24 hours. */
+                        timeWindows?: {
+                            /** @description Earliest attempt time in this window. Null means there is no earliest time constraint. Both bounds must be non-null when providing two windows. */
+                            earliestAttemptTime: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                            /** @description Latest attempt time in this window. Null means there is no latest time constraint. Both bounds must be non-null when providing two windows. */
+                            latestAttemptTime: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                        }[];
                         /** @description Time of day of the earliest time this stop should happen */
                         earliestAttemptTime?: {
                             /** @description Hour of the day */
@@ -5031,6 +5159,7 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
+                    /** @description Address of the stop, at least one of the fields is required. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
                     address: {
                         /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                         addressName?: string | null;
@@ -5051,24 +5180,6 @@ export interface operations {
                         /** @description The longitude of the address in decimal degrees. */
                         longitude?: number | null;
                     };
-                    timing?: {
-                        /** @description Time of day of the earliest time this stop should happen */
-                        earliestAttemptTime?: {
-                            /** @description Hour of the day */
-                            hour: number;
-                            /** @description Minute of the hour */
-                            minute: number;
-                        } | null;
-                        /** @description Time of day of the latest time this stop should happen */
-                        latestAttemptTime?: {
-                            /** @description Hour of the day */
-                            hour: number;
-                            /** @description Minute of the hour */
-                            minute: number;
-                        } | null;
-                        /** @description Duration in seconds of the activity in this stop, only set if you want to override the default. This can be set up to 8 hours. */
-                        estimatedAttemptDuration?: number | null;
-                    } | null;
                     recipient?: {
                         /** @description External ID of the recipient, as defined by the API user */
                         externalId?: string | null;
@@ -5136,6 +5247,41 @@ export interface operations {
                         identifier?: string | null;
                         slaStartsAt?: number | null;
                     } | null;
+                    timing?: {
+                        /** @description Up to two ordered arrival windows for this stop. An empty array clears the windows. A single window may have one null bound; two windows must have both bounds set. Windows must not overlap or touch, and their total span must not exceed 24 hours. */
+                        timeWindows?: {
+                            /** @description Earliest attempt time in this window. Null means there is no earliest time constraint. Both bounds must be non-null when providing two windows. */
+                            earliestAttemptTime: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                            /** @description Latest attempt time in this window. Null means there is no latest time constraint. Both bounds must be non-null when providing two windows. */
+                            latestAttemptTime: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                        }[];
+                        /** @description Time of day of the earliest time this stop should happen */
+                        earliestAttemptTime?: {
+                            /** @description Hour of the day */
+                            hour: number;
+                            /** @description Minute of the hour */
+                            minute: number;
+                        } | null;
+                        /** @description Time of day of the latest time this stop should happen */
+                        latestAttemptTime?: {
+                            /** @description Hour of the day */
+                            hour: number;
+                            /** @description Minute of the hour */
+                            minute: number;
+                        } | null;
+                        /** @description Duration in seconds of the activity in this stop, only set if you want to override the default. This can be set up to 8 hours. */
+                        estimatedAttemptDuration?: number | null;
+                    } | null;
                 }[];
             };
         };
@@ -5154,6 +5300,10 @@ export interface operations {
                             error: {
                                 /** @description The error that occurred during import */
                                 message: string;
+                                /** @description Stable error code */
+                                code?: string;
+                                /** @description Invalid request parameter */
+                                param?: string;
                             };
                             /** @description The stop that failed to import */
                             stop: {
@@ -5524,7 +5674,7 @@ export interface operations {
                         /** @description The drivers. */
                         drivers: components["schemas"]["driverSchema"][];
                         /** @description The next page token. */
-                        nextPageToken: string | null;
+                        nextPageToken: null | string;
                     };
                 };
             };
@@ -5605,6 +5755,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
+        /** @description The request body for creating a driver. Even though `email` and `phone` are optional, you must provide exactly one of them */
         requestBody?: {
             content: {
                 "application/json": {
@@ -6453,7 +6604,7 @@ export interface operations {
                         /** @description The depots. */
                         depots: components["schemas"]["depotSchema"][];
                         /** @description The next page token. */
-                        nextPageToken: string | null;
+                        nextPageToken: null | string;
                     };
                 };
             };
@@ -6540,6 +6691,7 @@ export interface operations {
                     name: string;
                     /** @description Defines some default parameters for routes originating from this depot */
                     routeOverrides: {
+                        /** @description At least one of the fields is required. If the latitude and longitude fields are set they will override any of the others. */
                         startAddress: {
                             /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                             addressName?: string | null;
@@ -6900,6 +7052,7 @@ export interface operations {
                 "application/json": {
                     name?: string;
                     routeOverrides?: {
+                        /** @description At least one of the fields is required. If the latitude and longitude fields are set they will override any of the others. */
                         startAddress?: {
                             /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                             addressName?: string | null;
@@ -7075,6 +7228,7 @@ export interface operations {
                     name: string;
                     /** @description Defines some default parameters for routes originating from this depot */
                     routeOverrides: {
+                        /** @description At least one of the fields is required. If the latitude and longitude fields are set they will override any of the others. */
                         startAddress: {
                             /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                             addressName?: string | null;
@@ -7157,6 +7311,7 @@ export interface operations {
                             depot: {
                                 name: string;
                                 routeOverrides: {
+                                    /** @description At least one of the fields is required. If the latitude and longitude fields are set they will override any of the others. */
                                     startAddress: {
                                         /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                                         addressName?: string | null;
@@ -7499,6 +7654,13 @@ export interface operations {
                 pageToken?: string;
                 /** @description The maximum number of routes to return. */
                 maxPageSize?: number;
+                /** @description The filter to apply to the list of routes. The filter params are passed like this: `?filter[startsGte]=2026-10-01` or like this: `?filter.startsGte=2026-10-01` */
+                filter?: {
+                    /** @description Search for routes that start on or after this date, inclusive. The date must be in the format YYYY-MM-DD. */
+                    startsGte?: string;
+                    /** @description Search for routes that start on or before this date, inclusive. The date must be in the format YYYY-MM-DD. */
+                    startsLte?: string;
+                };
             };
             header?: never;
             path?: never;
@@ -7516,7 +7678,7 @@ export interface operations {
                         /** @description The routes. */
                         routes: components["schemas"]["routeSchema"][];
                         /** @description The next page token. */
-                        nextPageToken: string | null;
+                        nextPageToken: null | string;
                     };
                 };
             };
@@ -7622,7 +7784,7 @@ export interface operations {
                         /** @description The stops list. */
                         stops: components["schemas"]["stopSchema"][];
                         /** @description The next page token. */
-                        nextPageToken: string | null;
+                        nextPageToken: null | string;
                     };
                 };
             };
@@ -7944,7 +8106,7 @@ export interface operations {
                         /** @description The operations. */
                         operations: components["schemas"]["operationSchema"][];
                         /** @description The next page token. */
-                        nextPageToken: string | null;
+                        nextPageToken: null | string;
                     };
                 };
             };
@@ -8280,6 +8442,23 @@ export interface operations {
                         [key: string]: string | null;
                     } | null;
                     timing?: {
+                        /** @description Up to two ordered arrival windows for this stop. An empty array clears the windows. A single window may have one null bound; two windows must have both bounds set. Windows must not overlap or touch, and their total span must not exceed 24 hours. */
+                        timeWindows?: {
+                            /** @description Earliest attempt time in this window. Null means there is no earliest time constraint. Both bounds must be non-null when providing two windows. */
+                            earliestAttemptTime: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                            /** @description Latest attempt time in this window. Null means there is no latest time constraint. Both bounds must be non-null when providing two windows. */
+                            latestAttemptTime: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                        }[];
                         /** @description Time of day of the earliest time this stop should happen */
                         earliestAttemptTime?: {
                             /** @description Hour of the day */
@@ -8327,6 +8506,16 @@ export interface operations {
                         param?: string;
                         /** @description The URL with more information about the error. */
                         url?: string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @description A stable code identifying the time-window error. */
+                        code: ("time_windows_mismatch" | "time_windows_invalid" | "time_windows_unbounded" | "time_windows_too_many" | "time_windows_open_ended_with_multiple" | "time_windows_overlap" | "time_windows_span_exceeds_day") | string;
+                        /**
+                         * @description The request body field associated with this error; always `timing/timeWindows`.
+                         * @enum {string}
+                         */
+                        param: "timing/timeWindows";
                     };
                 };
             };
@@ -8455,7 +8644,7 @@ export interface operations {
                         /** @description The unassignedStops. */
                         unassignedStops: components["schemas"]["unassignedStopSchema"][];
                         /** @description The next page token. */
-                        nextPageToken: string | null;
+                        nextPageToken: null | string;
                     };
                 };
             };
@@ -8522,6 +8711,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @description Address of the stop, at least one of the fields is required. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
                     address: {
                         /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                         addressName?: string | null;
@@ -8545,6 +8735,23 @@ export interface operations {
                     /** @description The Depot ID that this unassigned stop belongs to, in the format `depot/<id>`. If not provided, or null, it will default to the team's main depot. */
                     depot?: string | null;
                     timing?: {
+                        /** @description Up to two ordered arrival windows for this stop. An empty array clears the windows. A single window may have one null bound; two windows must have both bounds set. Windows must not overlap or touch, and their total span must not exceed 24 hours. */
+                        timeWindows?: {
+                            /** @description Earliest attempt time in this window. Null means there is no earliest time constraint. Both bounds must be non-null when providing two windows. */
+                            earliestAttemptTime: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                            /** @description Latest attempt time in this window. Null means there is no latest time constraint. Both bounds must be non-null when providing two windows. */
+                            latestAttemptTime: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                        }[];
                         /** @description Time of day of the earliest time this stop should happen */
                         earliestAttemptTime?: {
                             /** @description Hour of the day */
@@ -8653,6 +8860,16 @@ export interface operations {
                         param?: string;
                         /** @description The URL with more information about the error. */
                         url?: string;
+                    } | {
+                        /** @description The error message. */
+                        message: string;
+                        /** @description A stable code identifying the time-window error. */
+                        code: ("time_windows_mismatch" | "time_windows_invalid" | "time_windows_unbounded" | "time_windows_too_many" | "time_windows_open_ended_with_multiple" | "time_windows_overlap" | "time_windows_span_exceeds_day") | string;
+                        /**
+                         * @description The request body field associated with this error; always `timing/timeWindows`.
+                         * @enum {string}
+                         */
+                        param: "timing/timeWindows";
                     };
                 };
             };
@@ -8765,6 +8982,7 @@ export interface operations {
                 "application/json": {
                     /** @description An array of unassigned stops to import in batch. Supports a maximum of 100 unassigned stops per request. Note that the `depot` is shared across all unassigned stops in the request, and thus should not be provided for individual unassigned stops. That is because the `depot` location is used to bias the geocoding results of the stops. */
                     unassignedStops: {
+                        /** @description Address of the stop, at least one of the fields is required. If the latitude and longitude fields are set they will override any of the others. The addressName field is not used for geocoding and is only for display purposes. */
                         address: {
                             /** @description The name of the address. This will not be used for geocoding, and is only for the final address display purposes. */
                             addressName?: string | null;
@@ -8785,24 +9003,6 @@ export interface operations {
                             /** @description The longitude of the address in decimal degrees. */
                             longitude?: number | null;
                         };
-                        timing?: {
-                            /** @description Time of day of the earliest time this stop should happen */
-                            earliestAttemptTime?: {
-                                /** @description Hour of the day */
-                                hour: number;
-                                /** @description Minute of the hour */
-                                minute: number;
-                            } | null;
-                            /** @description Time of day of the latest time this stop should happen */
-                            latestAttemptTime?: {
-                                /** @description Hour of the day */
-                                hour: number;
-                                /** @description Minute of the hour */
-                                minute: number;
-                            } | null;
-                            /** @description Duration in seconds of the activity in this stop, only set if you want to override the default. This can be set up to 8 hours. */
-                            estimatedAttemptDuration?: number | null;
-                        } | null;
                         recipient?: {
                             /** @description External ID of the recipient, as defined by the API user */
                             externalId?: string | null;
@@ -8866,6 +9066,41 @@ export interface operations {
                         customProperties?: {
                             [key: string]: string | null;
                         } | null;
+                        timing?: {
+                            /** @description Up to two ordered arrival windows for this stop. An empty array clears the windows. A single window may have one null bound; two windows must have both bounds set. Windows must not overlap or touch, and their total span must not exceed 24 hours. */
+                            timeWindows?: {
+                                /** @description Earliest attempt time in this window. Null means there is no earliest time constraint. Both bounds must be non-null when providing two windows. */
+                                earliestAttemptTime: {
+                                    /** @description Hour of the day */
+                                    hour: number;
+                                    /** @description Minute of the hour */
+                                    minute: number;
+                                } | null;
+                                /** @description Latest attempt time in this window. Null means there is no latest time constraint. Both bounds must be non-null when providing two windows. */
+                                latestAttemptTime: {
+                                    /** @description Hour of the day */
+                                    hour: number;
+                                    /** @description Minute of the hour */
+                                    minute: number;
+                                } | null;
+                            }[];
+                            /** @description Time of day of the earliest time this stop should happen */
+                            earliestAttemptTime?: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                            /** @description Time of day of the latest time this stop should happen */
+                            latestAttemptTime?: {
+                                /** @description Hour of the day */
+                                hour: number;
+                                /** @description Minute of the hour */
+                                minute: number;
+                            } | null;
+                            /** @description Duration in seconds of the activity in this stop, only set if you want to override the default. This can be set up to 8 hours. */
+                            estimatedAttemptDuration?: number | null;
+                        } | null;
                     }[];
                     /** @description The Depot ID the unassigned stops in the batch belong to, in the format `depot/<id>`. This is used to bias the geocoding results of the unassigned stops, so every unassigned stop in the batch should belong to the same depot. If not provided, or null, it will default to the team's main depot. */
                     depot?: string | null;
@@ -8887,6 +9122,10 @@ export interface operations {
                             error: {
                                 /** @description The error that occurred during import */
                                 message: string;
+                                /** @description Stable error code */
+                                code?: string;
+                                /** @description Invalid request parameter */
+                                param?: string;
                             };
                             /** @description The unassigned stop that failed to import */
                             unassignedStop: {
@@ -9284,6 +9523,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
+        /** @description The request body for creating a member. */
         requestBody: {
             content: {
                 "application/json": {
@@ -9864,7 +10104,7 @@ export interface operations {
                             unassignedStop: components["schemas"]["unassignedStopSchema"];
                         })[];
                         /** @description The next page token. */
-                        nextPageToken: string | null;
+                        nextPageToken: null | string;
                     };
                 };
             };

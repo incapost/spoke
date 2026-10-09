@@ -837,7 +837,7 @@ export interface operations {
                         /** @description The page of orders. */
                         orders: components["schemas"]["connectOrderSchema"][];
                         /** @description Opaque token for the next page. `null` on the last page. */
-                        nextPageToken: string | null;
+                        nextPageToken: null | string;
                     };
                 };
             };
@@ -1017,13 +1017,13 @@ export interface operations {
                         /** @description Recipient of the delivery. */
                         recipient: {
                             /** @description Full name of the recipient. */
-                            name: string | null;
+                            name: null | string;
                             /** @description Email address of the recipient. */
-                            email: string | null;
+                            email: null | string;
                             /** @description Phone number of the recipient. */
-                            phone: string | null;
+                            phone: null | string;
                             /** @description The retailer's own id for this recipient in their system. */
-                            externalId: string | null;
+                            externalId: null | string;
                         };
                         /** @description Package details: products, quantities, and the retailer's own id for this order. */
                         packageInfo: {
@@ -1042,9 +1042,9 @@ export interface operations {
                              * @deprecated
                              * @description Deprecated: weight in grams, regardless of the retailer weight setting. Use weight instead.
                              */
-                            packageLoadAmount: number | null;
+                            packageLoadAmount: null | number;
                             /** @description The retailer's own id for this order in their own system. */
-                            externalId: string | null;
+                            externalId: null | string;
                         };
                         /** @description Address of the delivery as returned on an `Order`. */
                         address: {
@@ -1055,18 +1055,18 @@ export interface operations {
                             /** @description Second line of the address. */
                             addressLineTwo: string;
                             /** @description Latitude coordinate in decimal degrees. */
-                            latitude: number | null;
+                            latitude: null | number;
                             /** @description Longitude coordinate in decimal degrees. */
-                            longitude: number | null;
+                            longitude: null | number;
                             /** @description Google Places identifier for this location. */
-                            placeId: string | null;
+                            placeId: null | string;
                             /** @description Place types from the Google Places API. */
                             placeTypes: string[];
                         };
                         /** @description How and when an order should be delivered: notes, the expected delivery date, proof-of-attempt requirements, and hand-off details. */
                         deliveryInstructions: {
                             /** @description Notes for the delivery. */
-                            notes: string | null;
+                            notes: null | string;
                             /** @description Calendar date the retailer expects delivery on. Date-only, in the retailer's local timezone. */
                             expectedDeliveryDate: {
                                 /** @description The day of the date. */
@@ -1079,7 +1079,7 @@ export interface operations {
                             /** @description Proof-of-attempt requirements for an order. */
                             proofOfAttemptRequirements: {
                                 /** @description Whether the driver must collect proof (signature or photo) on attempt. `null` uses the courier default, `false` disables it for this order, `true` enables it following the courier per-attempt-type policies. */
-                                enabled: boolean | null;
+                                enabled: null | boolean;
                             };
                             /** @description How an order is handed off to the courier. */
                             handOffInfo: {
@@ -1094,7 +1094,7 @@ export interface operations {
                         /** @description Whether the order has been submitted to a courier. */
                         submitted: boolean;
                         /** @description Timestamp in seconds when the order was submitted to a courier. */
-                        submittedAt: number | null;
+                        submittedAt: null | number;
                         /** @description Progress for the order. `null` until the courier assigns the order to a route. */
                         progress: {
                             /** @description Tracking link the recipient can follow. */
@@ -1781,13 +1781,13 @@ export interface operations {
                         /** @description Recipient of the delivery. */
                         recipient: {
                             /** @description Full name of the recipient. */
-                            name: string | null;
+                            name: null | string;
                             /** @description Email address of the recipient. */
-                            email: string | null;
+                            email: null | string;
                             /** @description Phone number of the recipient. */
-                            phone: string | null;
+                            phone: null | string;
                             /** @description The retailer's own id for this recipient in their system. */
-                            externalId: string | null;
+                            externalId: null | string;
                         };
                         /** @description Package details: products, quantities, and the retailer's own id for this order. */
                         packageInfo: {
@@ -1806,9 +1806,9 @@ export interface operations {
                              * @deprecated
                              * @description Deprecated: weight in grams, regardless of the retailer weight setting. Use weight instead.
                              */
-                            packageLoadAmount: number | null;
+                            packageLoadAmount: null | number;
                             /** @description The retailer's own id for this order in their own system. */
-                            externalId: string | null;
+                            externalId: null | string;
                         };
                         /** @description Address of the delivery as returned on an `Order`. */
                         address: {
@@ -1819,18 +1819,18 @@ export interface operations {
                             /** @description Second line of the address. */
                             addressLineTwo: string;
                             /** @description Latitude coordinate in decimal degrees. */
-                            latitude: number | null;
+                            latitude: null | number;
                             /** @description Longitude coordinate in decimal degrees. */
-                            longitude: number | null;
+                            longitude: null | number;
                             /** @description Google Places identifier for this location. */
-                            placeId: string | null;
+                            placeId: null | string;
                             /** @description Place types from the Google Places API. */
                             placeTypes: string[];
                         };
                         /** @description How and when an order should be delivered: notes, the expected delivery date, proof-of-attempt requirements, and hand-off details. */
                         deliveryInstructions: {
                             /** @description Notes for the delivery. */
-                            notes: string | null;
+                            notes: null | string;
                             /** @description Calendar date the retailer expects delivery on. Date-only, in the retailer's local timezone. */
                             expectedDeliveryDate: {
                                 /** @description The day of the date. */
@@ -1843,7 +1843,7 @@ export interface operations {
                             /** @description Proof-of-attempt requirements for an order. */
                             proofOfAttemptRequirements: {
                                 /** @description Whether the driver must collect proof (signature or photo) on attempt. `null` uses the courier default, `false` disables it for this order, `true` enables it following the courier per-attempt-type policies. */
-                                enabled: boolean | null;
+                                enabled: null | boolean;
                             };
                             /** @description How an order is handed off to the courier. */
                             handOffInfo: {
@@ -1858,7 +1858,7 @@ export interface operations {
                         /** @description Whether the order has been submitted to a courier. */
                         submitted: boolean;
                         /** @description Timestamp in seconds when the order was submitted to a courier. */
-                        submittedAt: number | null;
+                        submittedAt: null | number;
                         /** @description Progress for the order. `null` until the courier assigns the order to a route. */
                         progress: {
                             /** @description Tracking link the recipient can follow. */
@@ -2244,13 +2244,13 @@ export interface operations {
                         /** @description Recipient of the delivery. */
                         recipient: {
                             /** @description Full name of the recipient. */
-                            name: string | null;
+                            name: null | string;
                             /** @description Email address of the recipient. */
-                            email: string | null;
+                            email: null | string;
                             /** @description Phone number of the recipient. */
-                            phone: string | null;
+                            phone: null | string;
                             /** @description The retailer's own id for this recipient in their system. */
-                            externalId: string | null;
+                            externalId: null | string;
                         };
                         /** @description Package details: products, quantities, and the retailer's own id for this order. */
                         packageInfo: {
@@ -2269,9 +2269,9 @@ export interface operations {
                              * @deprecated
                              * @description Deprecated: weight in grams, regardless of the retailer weight setting. Use weight instead.
                              */
-                            packageLoadAmount: number | null;
+                            packageLoadAmount: null | number;
                             /** @description The retailer's own id for this order in their own system. */
-                            externalId: string | null;
+                            externalId: null | string;
                         };
                         /** @description Address of the delivery as returned on an `Order`. */
                         address: {
@@ -2282,18 +2282,18 @@ export interface operations {
                             /** @description Second line of the address. */
                             addressLineTwo: string;
                             /** @description Latitude coordinate in decimal degrees. */
-                            latitude: number | null;
+                            latitude: null | number;
                             /** @description Longitude coordinate in decimal degrees. */
-                            longitude: number | null;
+                            longitude: null | number;
                             /** @description Google Places identifier for this location. */
-                            placeId: string | null;
+                            placeId: null | string;
                             /** @description Place types from the Google Places API. */
                             placeTypes: string[];
                         };
                         /** @description How and when an order should be delivered: notes, the expected delivery date, proof-of-attempt requirements, and hand-off details. */
                         deliveryInstructions: {
                             /** @description Notes for the delivery. */
-                            notes: string | null;
+                            notes: null | string;
                             /** @description Calendar date the retailer expects delivery on. Date-only, in the retailer's local timezone. */
                             expectedDeliveryDate: {
                                 /** @description The day of the date. */
@@ -2306,7 +2306,7 @@ export interface operations {
                             /** @description Proof-of-attempt requirements for an order. */
                             proofOfAttemptRequirements: {
                                 /** @description Whether the driver must collect proof (signature or photo) on attempt. `null` uses the courier default, `false` disables it for this order, `true` enables it following the courier per-attempt-type policies. */
-                                enabled: boolean | null;
+                                enabled: null | boolean;
                             };
                             /** @description How an order is handed off to the courier. */
                             handOffInfo: {
@@ -2321,7 +2321,7 @@ export interface operations {
                         /** @description Whether the order has been submitted to a courier. */
                         submitted: boolean;
                         /** @description Timestamp in seconds when the order was submitted to a courier. */
-                        submittedAt: number | null;
+                        submittedAt: null | number;
                         /** @description Progress for the order. `null` until the courier assigns the order to a route. */
                         progress: {
                             /** @description Tracking link the recipient can follow. */
@@ -2656,7 +2656,7 @@ export interface operations {
                         /** @description The couriers connected to the retailer. */
                         couriers: components["schemas"]["connectCourierSchema"][];
                         /** @description The token for the next page, or null when there are no more couriers. */
-                        nextPageToken: string | null;
+                        nextPageToken: null | string;
                     };
                 };
             };
@@ -2864,7 +2864,7 @@ export interface operations {
                         /** @description The retailer's pickup locations. */
                         pickupLocations: components["schemas"]["connectPickupLocationSchema"][];
                         /** @description The token for the next page, or null when there are no more pickup locations. */
-                        nextPageToken: string | null;
+                        nextPageToken: null | string;
                     };
                 };
             };
